@@ -1,0 +1,153 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Авторизация",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/auth/register": {
+      "post": {
+        "summary": "Регистрирует нового пользователя",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Name": {
+                    "type": "string"
+                  },
+                  "Email": {
+                    "type": "string"
+                  },
+                  "Password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Пользователь успешно создан",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "value": {
+                      "type": "string",
+                      "example": "New user created successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Некорректный запрос или отсутствующие поля",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "value": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "FillRequirementName": {
+                    "value": {
+                      "success": false,
+                      "value": [
+                        "Fill requirement name field"
+                      ]
+                    }
+                  },
+                  "FillRequirementEmail": {
+                    "value": {
+                      "success": false,
+                      "value": [
+                        "Fill requirement email field"
+                      ]
+                    }
+                  },
+                  "FillRequirementPassword": {
+                    "value": {
+                      "success": false,
+                      "value": [
+                        "Fill requirement password field"
+                      ]
+                    }
+                  },
+                  "FillAllRequirementFields": {
+                    "value": {
+                      "success": false,
+                      "value": [
+                        "Fill requirement name field",
+                        "Fill requirement email field",
+                        "Fill requirement password field"
+                      ]
+                    }
+                  },
+                  "UserAlreadyExist": {
+                    "value": {
+                      "success": false,
+                      "value": [
+                        "User already exists"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Конфликтный запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "value": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "DuplicateStringExceptions": {
+                    "value": {
+                      "success": false,
+                      "value": "Duplicate data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

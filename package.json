@@ -1,0 +1,42 @@
+{
+  "name": "mboxnode",
+  "version": "1.0.0",
+  "description": "MBox Server",
+  "main": "server.js",
+  "type": "module",
+  "scripts": { 
+    "prod": "node src/server.js",
+    "start": "nodemon --experimental-modules src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Design-Template/MBox-Android.git#main"
+  },
+  "author": "Sergey Zhyltsov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Design-Template/MBox-Android/issues"
+  },
+  "homepage": "https://github.com/Design-Template/MBox-Android/tree/main#readme",
+  "dependencies": {
+    "amqplib": "^0.10.3",
+    "bcrypt": "^5.1.0",
+    "dotenv": "^16.1.4",
+    "joi": "^17.9.2",
+    "jsonwebtoken": "^9.0.1",
+    "koa": "^2.14.2",
+    "koa-bodyparser": "^4.4.0",
+    "koa-error": "^3.2.0",
+    "koa-router": "^12.0.0",
+    "minio": "^7.1.1",
+    "mysql2": "^3.3.3",
+    "npm": "^9.8.1",
+    "passport-jwt": "^4.0.1",
+    "redis": "^4.6.7",
+    "sequelize": "^6.32.1",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
