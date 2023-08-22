@@ -1,0 +1,53 @@
+# Папка node_modules
+node_modules/
+
+#Папка образов
+volumes/
+config.json
+# Файлы логов
+logs/
+*.log
+
+# Временные файлы
+*.tmp
+
+# Файлы конфигурации локальной среды
+#.env
+
+# Кэш npm
+.npm
+
+# Файлы отладки и профилирования
+*.pid
+*.seed
+*.pid.lock
+
+# Файлы сборки
+build/
+dist/
+
+# Файлы IDE и редакторов
+.vscode/
+.idea/
+*.sublime-*
+
+# Файлы пакетного менеджера
+package-lock.json
+yarn.lock
+
+# Файлы настроек проекта
+.project
+.settings/
+
+# Файлы тестов
+__tests__/
+
+# Файлы временных хранилищ
+db.sqlite
+
+# Другие временные и сгенерированные файлы
+*.swp
+.DS_Store
+
+volumes
+.vs

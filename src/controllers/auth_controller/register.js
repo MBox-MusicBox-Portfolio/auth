@@ -89,7 +89,7 @@ export async function createUser(object, context) {
  */
 export async function sendMail(redisKey, username, email) {
   try {
-    const confirmationLink = 'http://localhost:8000/api/auth/emailConfirm/?activateKey=KeyEmail_' + redisKey;
+    const confirmationLink = 'http://localhost/api/auth/emailConfirm/?activateKey=KeyEmail_' + redisKey;
         await rabbit.SendQuery(redisKey, username, 'register_mail',email,confirmationLink);
   } catch (ex) {
     console.error(ex);

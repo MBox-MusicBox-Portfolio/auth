@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import { decodeJWT } from '../../modules/token.js';
+import { isAuth } from '../../middleware/isAuth.js';
 import User from '../../models/user.js';
 dotenv.config();
 

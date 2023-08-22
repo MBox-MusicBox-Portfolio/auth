@@ -43,7 +43,7 @@ export async function validationLoginForm(object, context) {
                 let jwtToken  = await createJWT(jwtObject);
                     authKey.userKeyEntity=user.dataValues.Id;
                     authKey.token=jwtToken;
-            let redisDb   = await AddJWTToRedis(user.dataValues.Id, jwtToken);
+            let redisDb   = await AddJWTToRedis(jwtToken,user.dataValues.Id);
                 context.body = {
                     success:true,
                     token:jwtToken
@@ -90,10 +90,10 @@ export async function getRedisValue(authKey)
  * @param {*} user 
  * @param {*} token 
  */
-export async function AddJWTToRedis(user, token) {
+export async function AddJWTToRedis(jwt,user) {
     try {
         if (user || token) {
-            redis.RedisSetValue("authUser_"+v4() + user, JSON.stringify(authKey),7892928);
+            redis.RedisSetValue("authUser_"+jwt, user,7892928);
         }
     } catch (ex) {
        console.error(ex);
