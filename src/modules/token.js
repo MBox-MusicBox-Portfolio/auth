@@ -11,8 +11,8 @@ export async function createJWT(user){
     try{
         if(user)
         {
-          let encrypt=jwt.sign({Name: user.Name, Email:user.Email, Password: user.Password, 
-                                IsEmailVerify: user.IsEmailVerify, IsBlocked: user.IsBlocked, Role: user.Role, Birthday: user.Birthday}, process.env.JWT_SECRET);
+          let encrypt=jwt.sign({Name: user.Name, Email:user.Email, 
+                                Role: user.Role, Birthday: user.Birthday}, process.env.JWT_SECRET);
             return encrypt;
         }
     }catch(err){
