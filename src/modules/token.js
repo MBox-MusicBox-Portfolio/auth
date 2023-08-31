@@ -15,8 +15,7 @@ export async function createJWT(user){
                                 Role: user.Role, Birthday: user.Birthday}, process.env.JWT_SECRET);
             return encrypt;
         }
-    }catch(err){
-             
+    }catch(err){   
             return err 
     }
 }
