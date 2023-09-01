@@ -1,4 +1,3 @@
-import decodeJWT from '../modules/token.js';
 import redis from '../modules/redis.js'
 
 /**
