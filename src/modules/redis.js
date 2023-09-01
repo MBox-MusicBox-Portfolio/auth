@@ -75,7 +75,7 @@ export async function RedisDelKey(key)
  * @returns 
  */
 
-export async function RedisGetValue(key)
+export default async function RedisGetValue(key)
 {
     try{
         return (await redis.get(key));    
