@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import {RedisDelKey, RedisGetKey, RedisGetValue} from '../../modules/redis.js';
+import {RedisDelKey, RedisGetKey} from '../../modules/redis.js';
 import User from '../../models/user.js';
 dotenv.config();
 const response={
