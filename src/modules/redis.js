@@ -41,12 +41,13 @@ export async function RedisSetValue(key,object,timeout=3600)
 export async function RedisGetKey(key)
 {
     try{
-        if(key)
-        {
-          const keyRedis= await redis.exists(key);
-          console.log(keyRedis);
+        const keyRedis= await redis.exists(key);
+        if(keyRedis)
+        {  
+           return true;
         }else{
-            console.error(`[${new Date().toLocaleString()}] : Redis module: [RedisGetKey()]: Empty params `);
+            console.error(`[${new Date().toLocaleString()}] : Redis module: [RedisGetKey()]: Key not found `);
+          return false;  
         }
     }catch(ex){
 

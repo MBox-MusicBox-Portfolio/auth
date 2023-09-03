@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import { decodeJWT } from '../../modules/token.js';
-import { isAuth } from '../../middleware/isAuth.js';
 import User from '../../models/user.js';
+import crypto from 'bcrypt';
 dotenv.config();
 
 let requestData = {
@@ -9,32 +9,37 @@ let requestData = {
     newPassword: ""
 }
 
-export async function getUser()
-{
-    let decode = decodeJWT(user.token); 
+export async function getUser(token)
+{ 
     try{
-        let user = User.findOne({where:{Id:decode.Id}, attributes:{Password}});
-         user.Password= requestData.newPassword;
-        let status = await user.save();
-        //status === 1 ? ctx.body = JSON.stringify({success:true, value:{password: "Password update"}}) : ctx.body = JSON.stringify({success=false, value:{password:"Password not update"}});     
+        let jwtDecode = await decodeJWT(token);
+        let user = await User.findOne({ where: {Email : jwtDecode.Email}, attributes: ['Id','Password']});
+        if(user)
+        {
+            return user; 
+        }else{
+            return false;
+        }
     }catch(ex){
          console.error(ex);
     } 
 }
-
-export async function getRequest(context,ctx)
+/**
+ * Function for changing user password
+ * Функция для изменения пользовательского пароля 
+ * @param {*} token, oldPassword , newPassword, rePassword
+ * @returns 
+ */
+export async function changePassword(token, oldPassword , newPassword)
 {
-    if(context){
-        console.log(context);
-       ctx.status=200; 
-       data = context.body.request;
-       user.token = data.Token;
-       user.newPassword = data.Password;
+    let salt = process.env.PASS_SALT;
+    let user = await getUser(token);
+    let oldPass =  crypto.hashSync(oldPassword, salt);
+    if(user.dataValues.Password === oldPass)
+    {
+        user.Password = await crypto.hashSync(newPassword, salt);
+        await user.save();
     }else{
-        ctx.status=400;
-        return JSON.stringify({
-            request:false,
-            value:"User not found"
-        })
+        console.log("Password not much");
     }
 }

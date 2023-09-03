@@ -1,10 +1,8 @@
 import dotenv from 'dotenv';
-import { createJWT, decodeJWT } from '../../modules/token.js';
+import { createJWT } from '../../modules/token.js';
 import * as validator from '../../modules/validator.js';
-import { v4 } from 'uuid';
 import * as redis from '../../modules/redis.js';
 import User from '../../models/user.js';
-import { isConfirmEmail } from './email.js';
 
 dotenv.config();
 
@@ -32,17 +30,16 @@ export async function validationLoginForm(object, context) {
             context.body= await validator.parserErrorString(validation);
         }else{
             const {Email,Password} = context.request.body;
-                const user = await User.findOne({ where: {Email : object.Email}, attributes: ['Id','Name', 'Email', 'RoleId', 'IsEmailVerify', 'IsBlocked', 'Birthday', 'Password'] });
+                const user = await User.findOne({ where: {Email : object.Email}, attributes: ['Id','Name', 'Email', 'RoleId', 'IsBlocked', 'IsEmailVerify', 'Birthday','Password']});
                 const role = await user.getRole();
-            const dbValidate = await validator.databaseValidator(context.request.body,user,context);
+                const dbValidate = await validator.databaseValidator(context.request.body,user,context);
             context.body=dbValidate;
         if(dbValidate === true)
         {
-            // Перестроить user перед отправкой
             let jwtObject = await fillJWTUserObject(user,role);  
-                let jwtToken  = await createJWT(jwtObject);
-                    authKey.userKeyEntity=user.dataValues.Id;
-                    authKey.token=jwtToken;
+            let jwtToken  = await createJWT(jwtObject);
+                authKey.userKeyEntity=user.dataValues.Id;
+                authKey.token=jwtToken;
             let redisDb   = await AddJWTToRedis(jwtToken,user.dataValues.Id);
                 context.body = {
                     success:true,
