@@ -19,9 +19,9 @@ const activateKey={
  */
 
 export async function confirmEmail(object, ctx) {
-   if(object && ctx)
-   {
     try{
+    if(object && ctx)
+    {
         let key = await RedisGetValue(object.activateKey);
         //let stringDbKey = key.replace(/^"(.*)"$/, '$1');
         const user = await User.findOne({where:{Id:key}, attributes:['Id', 'isEmailVerify']});
@@ -32,15 +32,15 @@ export async function confirmEmail(object, ctx) {
               response.success=true;
               response.value={email:"Email is confirmed"}
         ctx.body=response;
+    }else{
+        console.error("The Email controller is down because you sent empty arguments! Abort")
+     }
     }catch(ex){
         ctx.status = 500;
              response.success=false;
              response.value={error: `${ex}`}      
         ctx.body=response;  
     }
-   }else{
-      console.error("The Email controller is down because you sent empty arguments! Abort")
-   }
 }
 
 /**
