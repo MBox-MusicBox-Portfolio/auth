@@ -11,17 +11,23 @@ const activateKey={
     redis: ""
 }
 
+/**
+ * Function for email confirmation
+ * Функция подтверждения почты
+ * @param {*} object 
+ * @param {*} ctx 
+ */
+
 export async function confirmEmail(object, ctx) {
-    /***
-     * TODO Сделать проверку на null 
-*/
+   if(object && ctx)
+   {
     try{
         let key = await RedisGetValue(object.activateKey);
         //let stringDbKey = key.replace(/^"(.*)"$/, '$1');
         const user = await User.findOne({where:{Id:key}, attributes:['Id', 'isEmailVerify']});
               user.IsEmailVerify = true;
               await user.save();
-              await delKey(key);
+              await RedisDelKey(key);
         ctx.status = 200;
               response.success=true;
               response.value={email:"Email is confirmed"}
@@ -32,28 +38,17 @@ export async function confirmEmail(object, ctx) {
              response.value={error: `${ex}`}      
         ctx.body=response;  
     }
-    
+   }else{
+      console.error("The Email controller is down because you sent empty arguments! Abort")
+   }
 }
 
 /**
- * Check email confirmation
- * Подтвержден пользователь или нет 
- * @param {*} object 
+ * 
+ * @param {*} key 
+ * @returns 
  */
-export async function isConfirmEmail(object)
-{
-    if(object)
-    {
-
-    }
-}
-
 export async function checkKeyExpiration(key)
 {
-  if(key){ return (RedisGetKey ? true : false);}
-}
-
-export async function delKey(key)
-{
-    await RedisDelKey(key);
+  if(key){ return (await RedisGetKey ? true : false);}
 }
