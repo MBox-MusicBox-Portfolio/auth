@@ -8,7 +8,11 @@ let requestData = {
     token: "", 
     newPassword: ""
 }
-
+/**
+ * Получаем юзера
+ * @param {*} token 
+ * @returns 
+ */
 export async function getUser(token)
 { 
     try{
