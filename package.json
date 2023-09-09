@@ -4,7 +4,7 @@
   "description": "MBox Server",
   "main": "server.js",
   "type": "module",
-  "scripts": { 
+  "scripts": {
     "prod": "node src/server.js",
     "start": "nodemon --experimental-modules src/server.js"
   },
@@ -31,6 +31,9 @@
     "minio": "^7.1.1",
     "mysql2": "^3.3.3",
     "npm": "^9.8.1",
+    "passport": "^0.6.0",
+    "passport-facebook": "^3.0.0",
+    "passport-google-oauth": "^2.0.0",
     "passport-jwt": "^4.0.1",
     "redis": "^4.6.7",
     "sequelize": "^6.32.1",
