@@ -64,6 +64,7 @@ export async function createUser(object, context) {
         Name: object.Name,
         Email: object.Email,
         RoleId: role.Id,
+        IsEmailVerify:false,
         Password: crypto.hashSync(object.Password, salt)
     });
     context.status=201;

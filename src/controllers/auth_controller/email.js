@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import {RedisDelKey, RedisGetKey} from '../../modules/redis.js';
+import {RedisDelKey, RedisGetValue, RedisGetKey} from '../../modules/redis.js';
 import User from '../../models/user.js';
 dotenv.config();
 const response={
@@ -23,11 +23,10 @@ export async function confirmEmail(object, ctx) {
     if(object && ctx)
     {
         let key = await RedisGetValue(object.activateKey);
-        //let stringDbKey = key.replace(/^"(.*)"$/, '$1');
-        const user = await User.findOne({where:{Id:key}, attributes:['Id', 'isEmailVerify']});
+         console.log("Activate key: " + object.activateKey+ "\n" + "Value:" + key);
+        const user = await User.findOne({where:{Id:key}, attributes:['Id', 'IsEmailVerify']});
               user.IsEmailVerify = true;
               await user.save();
-              await RedisDelKey(key);
         ctx.status = 200;
               response.success=true;
               response.value={email:"Email is confirmed"}

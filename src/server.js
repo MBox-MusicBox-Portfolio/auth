@@ -1,8 +1,7 @@
 import dotenv from 'dotenv';
-dotenv.config();
 import Koa from 'koa';
 import {RabbitMQConnection} from './modules/amqp.js';
-
+dotenv.config();
 /**
  * Import for routes
  */
@@ -14,6 +13,14 @@ import register from './api/auth/register.js';
 import change  from './api/auth/change.js';
 import logout from './api/auth/logout.js';
 
+/**
+ * Add OAuth modules 
+ */
+//import facebook from './api/oauth/facebook.js';
+
+/**
+ * Create server entity
+ */
 const server = new Koa();
 
 /**
@@ -28,6 +35,11 @@ server.use(email.routes());
 server.use(logout.routes());
 
 /**
+ * Attach OAuth routes
+ */
+//server.use(facebook.routes());
+
+/**
  * Allowed methods for HTTP
  */
 server.use(register.allowedMethods());
@@ -37,6 +49,7 @@ server.use(change.allowedMethods());
 server.use(email.allowedMethods());
 server.use(logout.allowedMethods());
 server.use(forgotten.allowedMethods());
+//server.use(oAuthRouter.allowedMethods());
 
 server.on('error', err => {
     console.error(`[${new Date().toLocaleString()}]: Server module:[Service]: Server down: ${err}`);
