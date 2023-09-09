@@ -69,6 +69,7 @@ export async function createUser(object, context) {
     });
     context.status=201;
      let redisKey= "KeyEmail_" +v4();
+     console.log("Redis Key: " + redisKey);
         await redis.RedisSetValue(redisKey,user.dataValues.Id);
      await rabbit.SendQuery(redisKey,user.dataValues.Name,'register_mail', user.dataValues.Email);
 

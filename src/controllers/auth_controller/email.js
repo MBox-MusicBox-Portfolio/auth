@@ -23,7 +23,6 @@ export async function confirmEmail(object, ctx) {
     if(object && ctx)
     {
         let key = await RedisGetValue(object.activateKey);
-         console.log("Activate key: " + object.activateKey+ "\n" + "Value:" + key);
         const user = await User.findOne({where:{Id:key}, attributes:['Id', 'IsEmailVerify']});
               user.IsEmailVerify = true;
               await user.save();
