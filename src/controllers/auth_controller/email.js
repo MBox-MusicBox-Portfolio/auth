@@ -26,6 +26,7 @@ export async function confirmEmail(object, ctx) {
         const user = await User.findOne({where:{Id:key}, attributes:['Id', 'IsEmailVerify']});
               user.IsEmailVerify = true;
               await user.save();
+              await RedisDelKey(ctx.query.activateKey);
         ctx.status = 200;
               response.success=true;
               response.value={email:"Email is confirmed"}
