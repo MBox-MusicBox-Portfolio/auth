@@ -38,7 +38,7 @@ export async function RedisSetValue(key,object,timeout=3600)
  * Проверяет существует ключ или нет
  * @param {*} key 
  */
-export async function RedisGetKey(key)
+export async function RedisExistKey(key)
 {
     try{
         const keyRedis= await redis.exists(key);

@@ -133,7 +133,7 @@ export async function databaseValidator(object , user,context)
 {
     if (!user) {
         context.status = 404;
-            response.value = {email: "User doesn't exist"};
+            response.value = {email: "The user still doesn't exist."};
         return response;
     }else{
         if(user.Password !== crypto.hashSync(object.Password, process.env.PASS_SALT))
