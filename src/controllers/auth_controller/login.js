@@ -25,7 +25,7 @@ const authKey = {
 export async function validationLoginForm(object, context) {
     try {
         const validation = await validator.getValidationAuthorization(object);
-        if(validation === null && validation.error)
+        if(validation.error)
         {
             context.status=400;
             context.body= await validator.parserErrorString(validation);
