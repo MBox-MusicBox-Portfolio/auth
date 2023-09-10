@@ -12,7 +12,7 @@ export async function createJWT(user){
         if(user)
         {
           let encrypt=jwt.sign({Name: user.Name, Email:user.Email, 
-                                Role: user.Role, Birthday: user.Birthday}, process.env.JWT_SECRET);
+                                Role: user.Role, Avatar: user.Avatar,Birthday: user.Birthday}, process.env.JWT_SECRET);
             return encrypt;
         }
     }catch(err){   
