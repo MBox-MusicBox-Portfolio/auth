@@ -33,20 +33,19 @@ export async function validationLoginForm(object, context) {
             const {Email,Password} = context.request.body;
                 const user = await User.findOne({ where: {Email : object.Email}, attributes: ['Id','Name', 'Avatar','Email', 'RoleId', 'IsBlocked', 'IsEmailVerify', 'Birthday','Password']});
                 const dbValidate = await validator.databaseValidator(context.request.body,user,context);
-            context.body=dbValidate;
+                context.body=dbValidate;
         if(dbValidate === true)
         {
             const role = await user.getRole();
             let jwtObject = await fillJWTUserObject(user,role);  
             let jwtToken  = await createJWT(jwtObject);
-           // let decrypt   = await decodeJWT(jwtToken);
+            let decrypt   = await decodeJWT(jwtToken);
                 authKey.userKeyEntity=user.dataValues.Id;
                 authKey.token=jwtToken;
             let redisDb   = await AddJWTToRedis(jwtToken,user.dataValues.Id);
                 context.body = {
                     success:true,
-                    token:jwtToken,
-                    decode: decrypt
+                    token:jwtToken
                 };   
         }
     }      
