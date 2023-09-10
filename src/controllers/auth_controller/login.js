@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { createJWT } from '../../modules/token.js';
+import { createJWT, decodeJWT } from '../../modules/token.js';
 import * as validator from '../../modules/validator.js';
 import * as redis from '../../modules/redis.js';
 import User from '../../models/user.js';
@@ -12,7 +12,8 @@ const response={
 }
 const authKey = {
     userKeyEntity: "",
-    token: ""
+    token: "",
+    decode:""
 }
 
 /**
@@ -30,20 +31,22 @@ export async function validationLoginForm(object, context) {
             context.body= await validator.parserErrorString(validation);
         }else{
             const {Email,Password} = context.request.body;
-                const user = await User.findOne({ where: {Email : object.Email}, attributes: ['Id','Name', 'Email', 'RoleId', 'IsBlocked', 'IsEmailVerify', 'Birthday','Password']});
-                const role = await user.getRole();
+                const user = await User.findOne({ where: {Email : object.Email}, attributes: ['Id','Name', 'Avatar','Email', 'RoleId', 'IsBlocked', 'IsEmailVerify', 'Birthday','Password']});
                 const dbValidate = await validator.databaseValidator(context.request.body,user,context);
             context.body=dbValidate;
         if(dbValidate === true)
         {
+            const role = await user.getRole();
             let jwtObject = await fillJWTUserObject(user,role);  
             let jwtToken  = await createJWT(jwtObject);
+           // let decrypt   = await decodeJWT(jwtToken);
                 authKey.userKeyEntity=user.dataValues.Id;
                 authKey.token=jwtToken;
             let redisDb   = await AddJWTToRedis(jwtToken,user.dataValues.Id);
                 context.body = {
                     success:true,
-                    token:jwtToken
+                    token:jwtToken,
+                    decode: decrypt
                 };   
         }
     }      

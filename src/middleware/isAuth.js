@@ -1,11 +1,11 @@
-import {RedisGetKey} from '../modules/redis.js'
+import {RedisGetValue} from '../modules/redis.js'
 
 /**
  * Мидлвари для защищенных роутов
  */
 
 const isAuth = async (ctx, next)=>{
-    let keyExists = await RedisGetKey("authUser_" + ctx.request.body.Token);
+    let keyExists = await RedisGetValue("authUser_" + ctx.request.body.Token);
     if (keyExists === true) {
           ctx.status = 200;  
           ctx.body = "Authorized";
