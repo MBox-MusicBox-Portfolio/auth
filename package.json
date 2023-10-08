@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "prod": "node src/server.js",
-    "start": "nodemon --experimental-modules src/server.js"
+    "dev": "nodemon --experimental-modules src/server.js"
   },
   "repository": {
     "type": "git",

@@ -20,21 +20,21 @@ export async function RabbitMQConnection()
          return false;
     }
 }
-export async function SendQuery(key,username, template, email,link)
+export async function SendQuery(redisKey,email, template,username)
 {
     try{
          connection = await rabbit.connect(connectString);
          channel= await connection.createChannel();
         await channel.assertQueue(queue, { durable: false });
         const message = {
-            Id: key,
-            Template: `${template}`,
-            Name:  username,
-            Email: email,
-            Body:  JSON.stringify({context:link})
+            To: `${email}`,
+            Id: `${redisKey}`,
+            Body: JSON.stringify({
+               Template: `${template}`,
+               Name: `${username}`
+            })
           };
         await channel.sendToQueue(queue, Buffer.from(JSON.stringify(message)));
-       
     }catch(err){
         console.log(`[${new Date().toLocaleString()}] : RabbitMQ Module : ${err} `);
     }

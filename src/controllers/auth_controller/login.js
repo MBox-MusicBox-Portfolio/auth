@@ -66,9 +66,9 @@ export async function fillJWTUserObject(object,role)
   let userObject={};
     if(object)
     {
-        const { RoleId, Password, ...restDataValues } = object.dataValues;
-        userObject = {
-           ...restDataValues,
+        const {RoleId, Password, ...restDataValues } = object.dataValues;
+        userObject = {  
+           ...restDataValues, 
         Role: role.dataValues.Name,
         };
     }
