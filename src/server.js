@@ -57,7 +57,7 @@ server.on('error', err => {
   
 try{
     server.listen(process.env.PORT || 4000, process.env.HTTP_SERVER, async ()=>{
-            console.log(`[${new Date().toLocaleString()}]   : Server module:[Service]: Server running | Port ${process.env.SERVER_PORT}`);
+            console.log(`[${new Date().toLocaleString()}]   : Server Auth Module:[Service]: Server running | Port ${process.env.SERVER_PORT}`);
             RabbitMQConnection();
     });
 

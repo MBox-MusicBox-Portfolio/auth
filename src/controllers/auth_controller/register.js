@@ -2,10 +2,11 @@ import dotenv from 'dotenv';
 import User from '../../models/user.js';
 import Roles from '../../models/roles.js';
 import { v4 } from 'uuid';
+import crypto from 'bcrypt';
 import * as redis from '../../modules/redis.js';
 import *as rabbit from '../../modules/amqp.js';
 import {getValidationRegistration, parserErrorString} from '../../modules/validator.js';
-import crypto from 'bcrypt';
+
 dotenv.config();
 
 const response = {
@@ -69,9 +70,9 @@ export async function createUser(object, context) {
     });
     context.status=201;
      let redisKey= "KeyEmail_" +v4();
-     console.log("Redis Key: " + redisKey);
+    // console.log("Redis Key: " + redisKey);
         await redis.RedisSetValue(redisKey,user.dataValues.Id);
-     await rabbit.SendQuery(redisKey,user.dataValues.Name,'register_mail', user.dataValues.Email);
+     await rabbit.SendQuery(redisKey, user.dataValues.Email,'register_mail',user.dataValues.Name);
 
   } catch (error) {
     if (error instanceof Sequelize.UniqueConstraintError) {
