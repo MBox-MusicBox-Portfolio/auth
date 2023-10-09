@@ -6,13 +6,17 @@ import Roles from "../models/roles.js"
 /***
  * Определяет какой юзер зашёл и какие данные пользователя кодировать в токен
  */
-export async function getDefinedUserRole(Emailbox, role) {
-  console.log("Role:" + role);
+export async function getDefinedUserRole(Emailbox, role=0) {
   if (Emailbox) {
     switch (role) {
       case 'user':
         const userData = await User.findOne({ where: { Email: Emailbox }, attributes: ['Id', 'Name', 'Avatar', 'Email', 'RoleId', 'IsBlocked', 'IsEmailVerify', 'Birthday', 'Password'] });
-        
+        const {RoleId, Password, ...restDataValues } = userData.dataValues;
+        const userObject = {  
+           ...restDataValues, 
+        Role: role,
+        };
+        return userObject; 
         break;
 
       case 'producer':

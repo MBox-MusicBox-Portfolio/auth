@@ -7,15 +7,6 @@ import {getDefinedUserRole} from '../../middleware/rolesDefined.js';
 
 dotenv.config();
 
-const response={
-    success:false,
-    value:{}
-}
-const authKey = {
-    userKeyEntity: "",
-    token: "",
-    decode:""
-}
 
 /**
  * Валидирование формы и данных в базе данных 
@@ -63,20 +54,6 @@ export async function getRedisValue(authKey)
         return compareToken === 1;
     }
 }   
-/*
-export async function fillJWTUserObject(object)
-{
-  let userObject={};
-    if(object)
-    {
-        const {RoleId, Password, ...restDataValues } = object.dataValues;
-        userObject = {  
-           ...restDataValues, 
-        };
-    }
-    return userObject;
-}
-*/
 
 /**
  * Добавление JWT токена в Redis 
