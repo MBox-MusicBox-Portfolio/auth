@@ -7,7 +7,6 @@ import {getDefinedUserRole} from '../../middleware/rolesDefined.js';
 
 dotenv.config();
 
-
 /**
  * Валидирование формы и данных в базе данных 
  * Form and Db data validation 
@@ -35,7 +34,6 @@ export async function validationLoginForm(object, context) {
                 context.body = {
                     success:true,
                     token:jwtToken,
-                   
                 };   
         }
     }      

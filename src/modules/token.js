@@ -11,12 +11,7 @@ export async function createJWT(user){
     try{
         if(user)
         {
-            /*
-          let encrypt=jwt.sign({Name: user.Name, Email:user.Email, 
-                                Role: user.Role, Avatar: user.Avatar,Birthday: user.Birthday}, process.env.JWT_SECRET);
-                                */
             let encrypt=jwt.sign(JSON.parse(JSON.stringify(user)), process.env.JWT_SECRET);
-
             return encrypt;
         }
     }catch(err){   

@@ -4,7 +4,7 @@ import Producer from "../models/producer.js";
 import Roles from "../models/roles.js"
 
 /***
- * Определяет какой юзер зашёл и какие данные пользователя кодировать в токен
+ * Определяет какой конкретно юзер зашёл  на сервиси чьи к данные пользователя кодировать в токен
  */
 export async function getDefinedUserRole(Emailbox, role=0) {
   if (Emailbox) {
