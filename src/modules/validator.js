@@ -132,13 +132,13 @@ export async function hideEmptyObjectProperty(objectString)
 export async function databaseValidator(object , user,context)
 {
     if (!user) {
-        context.status = 404;
+        context.status = 403;
             response.value = {email: "The user still doesn't exist."};
         return response;
     }else{
         if(user.Password !== crypto.hashSync(object.Password, process.env.PASS_SALT))
         {
-            context.status = 401;
+            context.status = 403;
                response.value = {password: "Invalid password"};
             return response;
         }else if(!user.IsEmailVerify)
