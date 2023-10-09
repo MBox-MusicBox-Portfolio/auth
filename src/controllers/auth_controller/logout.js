@@ -4,7 +4,7 @@ import {RedisDelKey, RedisGetValue} from  '../../modules/redis.js';
 /**
  * Logout current user
  */
-export async function logout(key)
+export async function logout(key, context)
 {
    if(await RedisGetValue("authUser_"+key))
    {

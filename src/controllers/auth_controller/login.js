@@ -3,6 +3,7 @@ import { createJWT, decodeJWT } from '../../modules/token.js';
 import * as validator from '../../modules/validator.js';
 import * as redis from '../../modules/redis.js';
 import User from '../../models/user.js';
+import {getDefinedUserRole} from '../../middleware/rolesDefined.js';
 
 dotenv.config();
 
@@ -37,15 +38,13 @@ export async function validationLoginForm(object, context) {
         if(dbValidate === true)
         {
             const role = await user.getRole();
-            let jwtObject = await fillJWTUserObject(user,role);  
-            let jwtToken  = await createJWT(jwtObject);
+            let jwtToken  = await createJWT(await getDefinedUserRole(Email,role.dataValues.Name));
             let decrypt   = await decodeJWT(jwtToken);
-                authKey.userKeyEntity=user.dataValues.Id;
-                authKey.token=jwtToken;
             let redisDb   = await AddJWTToRedis(jwtToken,user.dataValues.Id);
                 context.body = {
                     success:true,
-                    token:jwtToken
+                    token:jwtToken,
+                    decode:decrypt
                 };   
         }
     }      
@@ -54,26 +53,7 @@ export async function validationLoginForm(object, context) {
         context.body=response;
     }
 }
- /**
-  * Генерация объекта для создания JWT токена
-  * Generate object for JWT token creation
-  * @param {*} object 
-  * @param {*} role 
-  * @returns 
-  */
-export async function fillJWTUserObject(object,role)
-{
-  let userObject={};
-    if(object)
-    {
-        const {RoleId, Password, ...restDataValues } = object.dataValues;
-        userObject = {  
-           ...restDataValues, 
-        Role: role.dataValues.Name,
-        };
-    }
-    return userObject;
-}
+
 
 export async function getRedisValue(authKey)
 {
@@ -83,6 +63,21 @@ export async function getRedisValue(authKey)
         return compareToken === 1;
     }
 }   
+/*
+export async function fillJWTUserObject(object)
+{
+  let userObject={};
+    if(object)
+    {
+        const {RoleId, Password, ...restDataValues } = object.dataValues;
+        userObject = {  
+           ...restDataValues, 
+        };
+    }
+    return userObject;
+}
+*/
+
 /**
  * Добавление JWT токена в Redis 
  * Set up JWT token to the redis 

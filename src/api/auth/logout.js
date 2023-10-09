@@ -6,7 +6,7 @@ const router = new Router();
 router.use(bodyParser());
 
 router.post('/api/auth/logout', async (ctx)=>{
-    await logout(ctx.request.body.Token);
+    await logout(ctx.request.body.Token, ctx);
 });
 
 export default router;
