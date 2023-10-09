@@ -30,12 +30,12 @@ export async function validationLoginForm(object, context) {
         {
             const role = await user.getRole();
             let jwtToken  = await createJWT(await getDefinedUserRole(Email,role.dataValues.Name));
-            let decrypt   = await decodeJWT(jwtToken);
+           // let decrypt   = await decodeJWT(jwtToken);
             let redisDb   = await AddJWTToRedis(jwtToken,user.dataValues.Id);
                 context.body = {
                     success:true,
                     token:jwtToken,
-                    decode:decrypt
+                   
                 };   
         }
     }      
