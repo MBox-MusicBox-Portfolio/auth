@@ -11,7 +11,7 @@ export async function createJWT(user){
     try{
         if(user)
         {
-            let encrypt=jwt.sign(JSON.parse(JSON.stringify(user)), process.env.JWT_SECRET);
+            let encrypt=jwt.sign(JSON.parse(JSON.stringify(user)), process.env.JWT_SECRET, {audience:"MBox authorization server", issuer:"MBox Teams", expiresIn: '60d'})
             return encrypt;
         }
     }catch(err){   

@@ -15,17 +15,25 @@ const response = {
 };
 /**
  * Form validation function 
- * Валидация формы
+ * Валидация данных из тела запроса 
  * @param {*} object 
  * @param {*} context 
  */
 export async function validationRegisterForm(object, context) {
-   try {
+  try {
+      /*
+     try{
+      const validation = await getValidationRegistration(object);
+     }catch(err){
+       context.status=400;
+       context.body=err.errors;
+     }
+     */
      const validation = await getValidationRegistration(object);
      if (validation !== null && validation.error)
      {
+       console.log(validation);
         context.status=400;
-        console.log(validation.error);
         context.body = await parserErrorString(validation);
      }else{
         const user = await User.findOne({where:{Email: object.Email}, attributes:["Email"]});
@@ -33,18 +41,18 @@ export async function validationRegisterForm(object, context) {
      {
         await createUser(object,context);
           response.success=true;
-          response.value={email:"The user created successfully"};
+          response.value={registration:"The user created successfully"};
             context.body=response;
       }else{
           context.status=400;
-            response.value={email:"The current user exist"}
+            response.value={registration:"The current user exist"}
               context.body=response;
       }
     }
   } catch (error) {
           context.status = 500;
           response.value={
-             errors: error};
+             errors: `[${new Date().toLocaleString()} Controller Register::validationRegisterForm function] : Exception handler : ${error}`};
         context.body=response;
       //onsole.log(error);
   }

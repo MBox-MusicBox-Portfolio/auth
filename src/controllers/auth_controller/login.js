@@ -3,8 +3,6 @@ import { createJWT, decodeJWT } from '../../modules/token.js';
 import * as validator from '../../modules/validator.js';
 import * as redis from '../../modules/redis.js';
 import User from '../../models/user.js';
-import {getDefinedUserRole} from '../../middleware/rolesDefined.js';
-
 dotenv.config();
 
 /**
@@ -27,28 +25,43 @@ export async function validationLoginForm(object, context) {
                 context.body=dbValidate;
         if(dbValidate === true)
         {
-            const role = await user.getRole();
-            let jwtToken  = await createJWT(await getDefinedUserRole(Email,role.dataValues.Name));
-           // let decrypt   = await decodeJWT(jwtToken);
+            let jwtToken  = await createJWT(await dropObjectProperty(user.dataValues,await user.getRole()));
+            let decrypt   = await decodeJWT(jwtToken);
             let redisDb   = await AddJWTToRedis(jwtToken,user.dataValues.Id);
                 context.body = {
                     success:true,
                     token:jwtToken,
+                    decode: decrypt
                 };   
-        }
+       }
     }      
     }catch(ex){
-            response.value={error: `${ex}`}
-        context.body=response;
+        context.status=500;
+        context.body={
+            success:false,
+            value:{
+                error: `[${Date.now().toLocaleString() } Login Modules::validationLoginForm ] : Exception handler: ${ex}`
+            }
+        }
     }
 }
 
+export async function dropObjectProperty(user, rolename) {
+  return user
+    ? (
+        delete user.Password,
+        delete user.RoleId,
+        rolename?.dataValues?.Name ? (user.Role = rolename.dataValues.Name) : null,
+        user
+      )
+    : null;
+}
 
 export async function getRedisValue(authKey)
 {
     if(authKey.token)
     {
-       let compareToken = redis.RedisGetValue(authKey.token);
+       let compareToken = await redis.RedisGetValue(authKey.token);
         return compareToken === 1;
     }
 }   
