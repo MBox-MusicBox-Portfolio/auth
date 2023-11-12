@@ -2,6 +2,7 @@
 import Joi from 'joi';
 import crypto from 'bcrypt';
 import { v4 } from 'uuid';
+//import * as yup from 'yup';
 import * as redis from '../modules/redis.js';
 import * as rabbit from '../modules/amqp.js';
 const response={success:false, value:{}}
@@ -10,6 +11,15 @@ const response={success:false, value:{}}
  * Shema object for registration 
  * Схема валидации для регистрации 
  */
+/*
+export const registration = yup.object().shape({
+    Name: yup.string().required(),
+    Email: yup.string().email().required(),
+    Birthday: yup.number().integer().min(1950).max(new Date().getFullYear()),
+    Password: yup.string().min(8).max(30).required(),
+});
+*/
+
 export const registration = Joi.object({
     Name: Joi.string().alphanum().empty().required(),
     Email: Joi.string().email({minDomainSegments: 2, tlds: {allow:['com','net']}}).required(),
@@ -51,7 +61,8 @@ export async function getValidationRegistration(formobject)
 {
     if(formobject)
     {
-         const shemaRegistryValidation = registration.validate(formobject,{abortEarly:false});
+        // const shemaRegistryValidation = await registration.validateSync(formobject,{abortEarly:false});
+        const shemaRegistryValidation = await registration.validate(formobject,{abortEarly:false});
         return shemaRegistryValidation;
     }else{
         console.error("Validator error: Empty object");
@@ -72,7 +83,7 @@ export async function getValidationForgottenPassword(formobject)
  * Splits a single string containing name, email, and password into separate strings.
  * Object with separate name, email and password properties.
  * Разбивает цельную строку ошибок name,email и password на отдельные строки
- * Возвращает объект со значением полей для имени, электронной почты и пароля.
+ * Возвращает объект со значением  для имени, электронной почты и пароля.
  * @param {*} errorString 
  * @returns 
  */
@@ -133,7 +144,7 @@ export async function databaseValidator(object , user,context)
 {
     if (!user) {
         context.status = 403;
-            response.value = {email: "The user still doesn't exist."};
+            response.value = {authorization: "The user still doesn't exist."};
         return response;
     }else{
         if(user.Password !== crypto.hashSync(object.Password, process.env.PASS_SALT))
@@ -145,7 +156,7 @@ export async function databaseValidator(object , user,context)
         {
             context.status = 202;
                 response.value = {
-                  email: "To complete the registration process. Your email must be confirmed!"
+                  authorization: "To complete the registration process. Your email must be confirmed!"
 
          };
             let redisKey= "KeyEmail_" +v4();

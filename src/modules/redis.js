@@ -7,10 +7,10 @@ const redis = createClient({
   });
 
 redis.on('error', () => {
-    console.error(`[${new Date().toLocaleString()}]   : Redis module:[Service] Connect refused check available service`);
+    console.error(`[${new Date().toLocaleString()}]   : Redis module:[As Service] Connect refused check available service`);
 });
  redis.on("connect",() =>{
-      console.log(`[${new Date().toLocaleString()}]   : Redis module:[Service] Connection successfull`);
+      console.log(`[${new Date().toLocaleString()}]   : Redis module:[ As Service] Connection successfull`);
  }) 
 
 await redis.connect();
@@ -29,7 +29,7 @@ export async function RedisSetValue(key,object,timeout=3600)
             NX:true
         });
     } catch (error) {
-        console.error(`[${new Date().toLocaleString()}] : Redis module: [Service Exceptions]: + ${error}`);
+        console.error(`[${new Date().toLocaleString()}] : Redis module::RedisSetValue function + ${error}`);
         throw error;
     } 
 }
@@ -41,12 +41,12 @@ export async function RedisSetValue(key,object,timeout=3600)
 export async function RedisExistKey(key)
 {
     try{
-        const keyRedis= await redis.exists(key);
+        const keyRedis=await redis.exists(key);
         if(keyRedis)
         {  
            return true;
         }else{
-            console.error(`[${new Date().toLocaleString()}] : Redis module: [RedisGetKey()]: Key not found `);
+            console.error(`[${new Date().toLocaleString()}] : Redis module::RedisExistsKey function : Redis key  has not found! `);
           return false;  
         }
     }catch(ex){
@@ -65,7 +65,7 @@ export async function RedisDelKey(key)
     {
       return (await redis.del(key));
     }else{
-        console.error(`[${new Date().toLocaleString()}] : Redis module: [RedisDelKey()]: Empty params `);
+        console.error(`[${new Date().toLocaleString()}] : Redis module::RedisDelKey function : Empty params `);
     }
 }
 
@@ -81,7 +81,7 @@ export async function RedisGetValue(key)
     try{
         return (await redis.get(key));    
     }catch(ex){
-        console.error(`[${new Date().toLocaleString()}] : Redis module: [RedisGetValue()]: ${ex}`);
+        console.error(`[${new Date().toLocaleString()}] : Redis module::RedisGetValue function: ${ex}`);
     }
 }
 

@@ -8,12 +8,32 @@ const router = new Router();
 router.use(bodyParser());
 
 router.post('/api/auth/change', async (ctx)=>{
-    if(await isAuth(ctx) === true)
+   try{
+    if(await isAuth(ctx) !== null)
     {
         await changePassword(ctx.request.body.Token, ctx.request.body.oldPassword, ctx.request.body.newPassword);
+        ctx.status=200; 
+        ctx.body={
+            success:true,
+            value:{
+                message:"Password changed successfull!" 
+            }
+        }
     }else{
         console.error("Abort");
     }
+   }catch(ex){
+     ctx.status=500;
+     ctx.body={
+        success:false,
+        value:{
+            changePassword:{
+                error:`[${new Date().toLocaleString()} : Change API Password: ${ex}]`
+            }
+        }
+     }
+   }
+    
 });
 
 export default router;
