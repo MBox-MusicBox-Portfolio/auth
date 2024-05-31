@@ -2,12 +2,12 @@ import {DataTypes} from 'sequelize';
 import {db} from '../modules/db'; 
 
 const Roles = db.define('Roles', {
-  id: {
+  Id: {
     type: DataTypes.STRING(36),
     primaryKey: true,
     allowNull: false
   },
-  names: {
+  Name: {
     type: DataTypes.STRING(255),
     allowNull: false,
     unique: true
