@@ -3,48 +3,43 @@ import Roles from './Roles'
 import {db} from '../modules/db';
 
 export const User = db.define('Users', {
-  id: {
-    type: DataTypes.STRING(36),
-    primaryKey: true,
-    allowNull: false
+  Id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true
   },
-  usernames: {
-    type: DataTypes.STRING(255),
+  Name:{
+    type: DataTypes.STRING,
+    allowNull:false,
+  },
+  Email:{
+    type:DataTypes.STRING,
+    unique:true,
+    allowNull:false,
+  },
+  IsEmailVerify:{
+    type:DataTypes.BOOLEAN,
+    allowNull:false,
+    defaultValue: false,
+  },
+  IsBlocked:{
+    type:DataTypes.BOOLEAN,
     allowNull: false,
-    unique: true
+    defaultValue:false
   },
-  emails: {
-    type: DataTypes.STRING(255),
-    allowNull: false,
-    unique: true
+  Birthday:{
+    type:DataTypes.DATE,
+    allowNull:true
   },
-  passwords: {
-    type: DataTypes.STRING(255),
-    allowNull: false
+  RoleId:{
+    type:DataTypes.INTEGER,
+    allowNull:false
   },
-  avatars: {
-    type: DataTypes.STRING(255),
-    allowNull: true,
-    defaultValue: null
-  },
-  isBlockeds: {
-    type: DataTypes.BOOLEAN,
-    allowNull: false,
-    defaultValue: false
-  },
-  rolesId: {
-    type: DataTypes.STRING(36),
-    allowNull: true,
-    defaultValue: null
-  },
-  createdAt: {
-    type: DataTypes.DATE,
-    allowNull: false,
-    defaultValue:new Date().toLocaleString()
-  },
-  })
+  Password:{
+    type:DataTypes.STRING,
+    allowNull:false,
+}});
 
-
-  User.belongsTo(Roles, { foreignKey: 'rolesId',targetKey:'id'});
-  Roles.hasMany(User,{foreignKey:'rolesId'});
+  User.belongsTo(Roles, { foreignKey: 'RoleId',targetKey:'Id'});
+  Roles.hasMany(User,{foreignKey:'RoleId'});
   export default User;
