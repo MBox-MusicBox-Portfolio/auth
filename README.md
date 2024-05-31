@@ -5,7 +5,7 @@
 <h2>Authotization and Registration</h2>
 <p>To use the MBox application, you'll need to go through the authentication process and, if you're a new user, register an account.</p>
 
-<h2>Authorization Module</h2>
+<h2>Authorization API. HTTP Method POST </h2>
 <p>The Authentication Module is responsible for verifying user credentials and granting access to secure parts of the application. It utilizes the following components:</p>
 
 <h3>Format request to <code>/localhost/api/auth/login</code></h3>
@@ -20,7 +20,7 @@
   <li><b>Database Module:</b> Stores user credentials and authentication information.</li>
 </ul>
 
-<h2>Registration Module</h2>
+<h2>Registration API. HTTP Method POST</h2>
 <p>The Registration Module provides the ability for new users to create an account within the application. It includes the following components:</p>
 
 <h3>Format request to <code>/localhost/api/auth/register</code></h3>
@@ -38,6 +38,7 @@
   <li><b>Validation Module:</b> Checks and validates the data provided during registration.</li>
 </ul>
 
+<h2>Modules </h2>
 <h2>Tokens Module</h2>
 <p>The Tokens Module ensures secure management of authentication and access tokens. It interacts with the Authentication Module to generate and verify tokens.</p>
 
@@ -47,5 +48,18 @@
 <h2>Rabbit Module</h2>
 <p>The Rabbit Module can be utilized for asynchronous tasks and notifications within the application.</p>
 
+# Install dependencies for local running:
+```bash
+$ npm install
+$ npm run dev
+```
+# Generate jwt secret 
+```bash
+$ sudo apt install openssl -y
+$ openssl rand -hex 32
+```
+
 <h2>Contact</h2>
-<p>If you have any questions about the code structure, authentication, or registration, please feel free to contact us at <a href="mailto:sergey.rikhter@outlook.com">sergey.rikhter@outlook.com</a>.</p>
+<p>If you have any questions about the code structure, authentication, authorization or registration, please feel free to contact us at <a href="mailto:sergey.rikhter@outlook.com">sergey.rikhter@outlook.com</a>.</p>
+
+# (C) Copyright Array Studio Inc 
