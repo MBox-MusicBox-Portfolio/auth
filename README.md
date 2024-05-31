@@ -62,4 +62,5 @@ $ openssl rand -hex 32
 <h2>Contact</h2>
 <p>If you have any questions about the code structure, authentication, authorization or registration, please feel free to contact us at <a href="mailto:sergey.rikhter@outlook.com">sergey.rikhter@outlook.com</a>.</p>
 
-#(C) All right reserved by Array Studio Inc  
+# Copyright 
+(C) All right reserved by Array Studio Inc  
