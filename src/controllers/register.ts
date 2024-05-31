@@ -17,7 +17,7 @@ export async function createUser(object: any, ctx: any) {
             ctx.status = 400;
             return { success: false, values: isValidate };
         } else {
-            const isUserExist = await userExist(object.email, ctx);
+            const isUserExist = await userExist(object.Email, ctx);
         if (isUserExist)
         { 
             ctx.status = 409; //  HTTP Status Code for inserting duplicate values
@@ -35,10 +35,10 @@ export async function createUser(object: any, ctx: any) {
 
 async function addDbUser(object: any, ctx: any): Promise<any> {
     try {
-        const rolesId = await findRole("users");
+        const rolesId = await findRole("user");
         if (rolesId instanceof Roles) {
             const hashedPassword = bcrypt.hashSync(object.password, 10);
-            const userCreate = await User.create({id: uuidv4(), usernames: object.username, emails: object.email, rolesId: rolesId.dataValues.id, passwords: hashedPassword});
+            const userCreate = await User.create({id: uuidv4(), Username: object.Username, Email: object.Email, RoleId: rolesId.dataValues.Id, Password: hashedPassword});
             ctx.status = 201; // HTTP Status Code for Created
             return { success: true, value: "User created successfully" };
         } else {
@@ -53,7 +53,7 @@ async function addDbUser(object: any, ctx: any): Promise<any> {
 
 async function findRole(name: string): Promise<any> {
     try {
-        const roleGuid = await Roles.findOne({ where: { names: `${name }` }});
+        const roleGuid = await Roles.findOne({ where: { Name: `${name }` }});
         return roleGuid instanceof Roles ? roleGuid : null;
     } catch (err) {
         return { success: false, value: err || "Internal Server Error" };
@@ -62,7 +62,7 @@ async function findRole(name: string): Promise<any> {
 
 async function userExist(email: string, ctx: any): Promise<any> {
     try {
-        const isUserExist = await User.findOne({ where: { emails: email } });
+        const isUserExist = await User.findOne({ where: { Email: email } });
         if (isUserExist instanceof User) { ctx.status = 409; return {success:false,value:"Registration cannot be completed as the user already exists"}}
         return isUserExist;
     } catch (err) {
