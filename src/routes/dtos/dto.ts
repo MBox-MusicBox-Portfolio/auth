@@ -1,14 +1,14 @@
 import * as yup from 'yup'
 
 const userSchema: any = yup.object().shape({
-   username: yup.string().required("Entry fields with username"),
-   email: yup.string().email().required("Entry field with email"),
-   password: yup.string().required("Entry fields with password")
+   Username: yup.string().required("Entry fields with username"),
+   Email: yup.string().email().required("Entry field with email"),
+   Password: yup.string().required("Entry fields with password")
 });
 
 const userSchemaAuth : any = yup.object().shape({
-   email:yup.string().required("Entry fields with emails"),
-   password:yup.string().required("Entry fields with password")}); 
+   Email:yup.string().required("Entry fields with emails"),
+   Password:yup.string().required("Entry fields with password")}); 
 
 /**
  * Валидация пользователя
