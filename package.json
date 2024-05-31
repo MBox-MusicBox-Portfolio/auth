@@ -1,45 +1,42 @@
 {
-  "name": "mboxnode",
+  "name": "forum_auth",
   "version": "1.0.0",
-  "description": "MBox Server",
-  "main": "server.js",
-  "type": "module",
+  "main": "index.ts",
   "scripts": {
-    "prod": "node src/server.js",
-    "dev": "nodemon --experimental-modules src/server.js"
+    "start": "npx ts-node index.ts",
+    "prod": "npx ts-node index.ts",
+    "dev": "nodemon --exec ts-node src/index.ts"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Design-Template/MBox-Android.git#main"
-  },
-  "author": "Sergey Zhyltsov",
+  "keywords": [],
+  "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Design-Template/MBox-Android/issues"
-  },
-  "homepage": "https://github.com/Design-Template/MBox-Android/tree/main#readme",
-  "dependencies": {
-    "amqplib": "^0.10.3",
-    "bcrypt": "^5.1.0",
-    "dotenv": "^16.1.4",
-    "joi": "^17.9.2",
-    "jsonwebtoken": "^9.0.1",
-    "koa": "^2.14.2",
-    "koa-bodyparser": "^4.4.0",
-    "koa-router": "^12.0.0",
-    "minio": "^7.1.1",
-    "mysql2": "^3.3.3",
-    "npm": "^9.8.1",
-    "passport": "^0.6.0",
-    "passport-facebook": "^3.0.0",
-    "passport-google-oauth": "^2.0.0",
-    "passport-jwt": "^4.0.1",
-    "redis": "^4.6.7",
-    "sequelize": "^6.32.1",
-    "uuid": "^9.0.0",
-    "yup": "^1.3.2"
-  },
+  "description": "",
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "@babel/core": "^7.24.6",
+    "@babel/preset-env": "^7.24.6",
+    "@babel/preset-typescript": "^7.24.6",
+    "@types/bcrypt": "^5.0.2",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/koa__cors": "^5.0.0",
+    "@types/koa__router": "^12.0.4",
+    "@types/uuid": "^9.0.8",
+    "babel-cli": "^6.26.0",
+    "nodemon": "^3.1.1",
+    "ts-node": "^10.9.2"
+  },
+  "dependencies": {
+    "@koa/bodyparser": "^5.1.1",
+    "@koa/cors": "^5.0.0",
+    "@koa/router": "^12.0.1",
+    "@types/koa": "^2.15.0",
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.5",
+    "jsonwebtoken": "^9.0.2",
+    "koa": "^2.15.3",
+    "mysql2": "^3.9.7",
+    "redis": "^4.6.14",
+    "sequelize": "^6.37.3",
+    "uuid": "^9.0.1",
+    "yup": "^1.4.0"
   }
 }
