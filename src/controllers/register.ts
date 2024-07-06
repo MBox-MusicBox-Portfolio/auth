@@ -17,7 +17,7 @@ export async function createUser(object: any, ctx: any) {
             ctx.status = 400;
             return { success: false, values: isValidate };
         } else {
-            const isUserExist = await userExist(object.Email, ctx);
+            const isUserExist = await userExist(object.email, ctx);
         if (isUserExist)
         { 
             ctx.status = 409; //  HTTP Status Code for inserting duplicate values
@@ -38,7 +38,7 @@ async function addDbUser(object: any, ctx: any): Promise<any> {
         const rolesId = await findRole("user");
         if (rolesId instanceof Roles) {
             const hashedPassword = bcrypt.hashSync(object.password, 10);
-            const userCreate = await User.create({id: uuidv4(), Username: object.Username, Email: object.Email, RoleId: rolesId.dataValues.Id, Password: hashedPassword});
+            const userCreate = await User.create({id: uuidv4(), Username: object.username, Email: object.email, roleId: rolesId.dataValues.Id, Password: hashedPassword});
             ctx.status = 201; // HTTP Status Code for Created
             return { success: true, value: "User created successfully" };
         } else {
