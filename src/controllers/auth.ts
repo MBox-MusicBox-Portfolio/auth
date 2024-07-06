@@ -49,7 +49,7 @@ export async function authUser(object:any, ctx:any) : Promise<any>
 async function generateToken(user:any) : Promise<any>
 {
     try{
-        const jwt = await token("encrypt",{Id: user.dataValues.Id, Username:user.dataValues.Username, Avatar:user.dataValues.Avatar, RoleId: user.dataValues.RoleId});
+        const jwt = await token("encrypt",{id: user.dataValues.Id, username:user.dataValues.Username, avatar:user.dataValues.Avatar, roleId: user.dataValues.RoleId});
        // const isJwt = jwt !== undefined ? {success:true,value:{access_token: jwt}} : undefined;
         return jwt;
     }catch(error){
@@ -64,7 +64,7 @@ async function generateToken(user:any) : Promise<any>
 async function createRedisRecord(user:any, jwt:string) : Promise<any>
 {
     try{
-        await redis.RedisSetValue("AuthKey"+jwt,{Id: user.dataValues.Id, Username:user.dataValues.Username, Avatar:user.dataValues.Avatar, RoleId: user.dataValues.RoleId})
+        await redis.RedisSetValue("AuthKey"+jwt,{id: user.dataValues.Id, username:user.dataValues.Username, avatar:user.dataValues.Avatar, roleId: user.dataValues.RoleId})
        // return true; 
     }catch(error){
       console.debug(error);
@@ -77,7 +77,7 @@ async function createRedisRecord(user:any, jwt:string) : Promise<any>
  */
 async function checkingBlockedUserOrNo(object:any) :Promise<any>
 {
-    const currentUser = await User.findOne({where:{Email:object.Email}})
+    const currentUser = await User.findOne({where:{Email:object.email}})
     const isBlocked = currentUser?.dataValues.IsBlocked  == true ? true : false;
     return isBlocked;  
 }
@@ -89,7 +89,7 @@ async function getUserInstance(object:any): Promise<any>
 {
     if(await existUserIntoDb(object) !== false)
     {
-        const user = await User.findOne({where:{Email:object.Email}});
+        const user = await User.findOne({where:{Email:object.email}});
         const isUser = user instanceof User == true ? user : false; 
         return isUser; 
     }else{
@@ -108,7 +108,7 @@ async function getUserInstance(object:any): Promise<any>
 async function existUserIntoDb(object:any) : Promise<any>
 {
     try{
-        const user = await User.findOne({where:{Email:object.Email}});
+        const user = await User.findOne({where:{Email:object.email}});
          return user instanceof User == true ?  true: false; 
     }catch(error){
         return {
@@ -125,6 +125,6 @@ async function existUserIntoDb(object:any) : Promise<any>
  */
 async function comparePass(object:any) : Promise<boolean>
 {
-  const user = await User.findOne({where:{Email:object.Email}});
-  return bcrypt.compareSync(object.Password,user?.dataValues.Password);
+  const user = await User.findOne({where:{Email:object.email}});
+  return bcrypt.compareSync(object.password,user?.dataValues.Password);
 }
