@@ -1,6 +1,6 @@
 import {DataTypes} from 'sequelize';
-import Roles from './Roles'
-import {db} from '../modules/db';
+import Roles from './roles.models'
+import {db} from '../modules/db.modules';
 
 export const User = db.define('Users', {
     Id: {
@@ -32,7 +32,7 @@ export const User = db.define('Users', {
         allowNull: true
     },
     RoleId: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         allowNull: false
     },
     Password: {
