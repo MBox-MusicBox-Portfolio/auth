@@ -1,5 +1,5 @@
 import {DataTypes} from 'sequelize';
-import {db} from '../modules/db';
+import {db} from '../modules/db.modules';
 
 const Roles = db.define('Roles', {
     Id: {
@@ -8,7 +8,7 @@ const Roles = db.define('Roles', {
         allowNull: false
     },
     Name: {
-        type: DataTypes.STRING(255),
+        type: DataTypes.TEXT,
         allowNull: false,
         unique: true
     }

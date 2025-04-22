@@ -12,7 +12,7 @@ const encrypt = (user: any): string => {
     });
 }
 
-const decode = (token: string): JwtPayload => {
+const decode = (token: string): any => {
     return jwt.verify(token, `${process.env.JWT_SECRET}`);
 }
 
