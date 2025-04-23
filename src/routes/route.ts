@@ -4,7 +4,8 @@ import {createNewUser} from "../controllers/register.controller";
 import {authUser} from "../controllers/auth.controller";
 import { koaSwagger } from 'koa2-swagger-ui';
 import swaggerDocGenerator from 'swagger-jsdoc';
-import { authDTO } from "../controllers/dto/dto.auth.controller";
+import * as AuthUtil from "../utils/AuthUtil.utils";
+import { AuthMessages } from "../utils/AuthMessage.util";
 
 const router: Router = new Router();
 const options = {
@@ -51,7 +52,7 @@ router.post('/api/auth/login', async (ctx) => {
       ctx.body = await authUser(ctx.request.body,ctx);
     }catch(err:any)
     {
-      ctx.body = authDTO(false,null,err);
+      ctx.body = AuthUtil.handleInternalServerError(AuthMessages.InternalServerError,ctx);
     }
 });
 
