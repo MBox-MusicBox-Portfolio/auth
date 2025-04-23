@@ -3,7 +3,9 @@ import { HttpStatusCode } from './HttpStatusCode.util';
 import bcrypt from 'bcrypt';
 import {token} from '../modules/token.modules';
 import * as redis from '../modules/redis.modules';
-import { AuthMessages } from './AuthMessage.util';
+import dotenv from 'dotenv';
+
+dotenv.config();
     
 /**
  * Generated new tokens
