@@ -2,8 +2,7 @@
 import { AuthMessages } from '../utils/AuthMessage.util';
 import * as AuthUtil from '../utils/AuthUtil.utils';
 const checkPass = async (currentPassword:string , existUserPassword:string) : Promise<boolean> =>{
-   console.log(currentPassword);
-    return await AuthUtil.comparePass(existUserPassword,currentPassword);
+    return await AuthUtil.comparePass(currentPassword,existUserPassword);
 }
 
 const isBlockedUser = (currentUser:any):boolean => {

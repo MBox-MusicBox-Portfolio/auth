@@ -2,7 +2,7 @@ import User from "../models/user.models";
 import {v4 as uuidv4} from 'uuid';
 import { RoleRepository } from "./role.repository";
 import {IUserRepository} from "./interfaces/IUserRepository.interface"
-import { UniqueConstraintError } from "sequelize";
+
 
 
 export class UserRepository implements IUserRepository{
@@ -27,7 +27,7 @@ export class UserRepository implements IUserRepository{
             Id: uuidv4(),
             Name: newUser.username,
             Email: newUser.email,
-            RoleId: roleId.Id,
+            RoleId: roleId.dataValues.Id,
             Password: hashedPassword
       });
       return true;

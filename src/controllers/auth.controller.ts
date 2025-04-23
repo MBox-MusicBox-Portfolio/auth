@@ -19,7 +19,7 @@ export async function authUser(currentUser: any, ctx: any): Promise<any> {
               const findUser = await user.findUser(currentUser.email);
               const userDataChecked = await checkUserData(findUser, ctx.request.body.password);
             return userDataChecked === true 
-                   ? await AuthUtil.handleSuccessfulAuth(currentUser,ctx) 
+                   ? await AuthUtil.handleSuccessfulAuth(findUser,ctx) 
                    : AuthUtil.handleNotFound(userDataChecked,ctx); 
         } else {
             return AuthUtil.handleFailedValidation(authFormValidation,ctx);

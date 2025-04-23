@@ -88,5 +88,5 @@ export const comparePass = async (currentPassword:string, existUserPassword:stri
 }
 
 export const encryptPassword = async(password:string):Promise<any>=>{
-     return await bcrypt.hash(password, 10);
+     return await bcrypt.hash(password, process.env.PASS_SALT!);
 }
