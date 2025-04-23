@@ -2,8 +2,8 @@
 import { AuthMessages } from '../utils/AuthMessage.util';
 import * as AuthUtil from '../utils/AuthUtil.utils';
 const checkPass = async (currentPassword:string , existUserPassword:string) : Promise<boolean> =>{
-    //return await bcrypt.compare(currentPassword, existUserPassword);
-    return await AuthUtil.comparePass(currentPassword,existUserPassword);
+   console.log(currentPassword);
+    return await AuthUtil.comparePass(existUserPassword,currentPassword);
 }
 
 const isBlockedUser = (currentUser:any):boolean => {
@@ -16,7 +16,6 @@ const userIsExist = (currentUser: any): boolean => {
 
 
 export const checkUserData = async (currentUser: any, entriedPassword: string):Promise<string | boolean> => {
-
     if (!userIsExist(currentUser)) {
         return AuthMessages.UserNotFound;
     }
@@ -24,8 +23,7 @@ export const checkUserData = async (currentUser: any, entriedPassword: string):P
     if (isBlockedUser(currentUser)) {
          return AuthMessages.UserIsBanned;
     }
-
-    const passwordIsCorrect = await checkPass(entriedPassword, currentUser.dataValues.Password,);
+    const passwordIsCorrect = await checkPass(entriedPassword,currentUser.dataValues.Password);
     if (!passwordIsCorrect) {
         return AuthMessages.IncorrectPassword;
     }
