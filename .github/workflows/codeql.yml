@@ -20,6 +20,17 @@ on:
     - cron: '37 6 * * 6'
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Install NodeJS
+        run: |
+          sudo apt-get update
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
+          \. "$HOME/.nvm/nvm.sh"
+          nvm install 20
   analyze:
     name: Analyze (${{ matrix.language }})
     # Runner size impacts CodeQL analysis time. To learn more, please see:
