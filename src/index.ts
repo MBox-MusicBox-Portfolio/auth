@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import router from './routes/route';
 import {dbConnect} from './modules/db.modules';
 import * as redis from './modules/redis.modules';
-
+import {RabbitMQConnection} from './modules/rabbitmq.modules';
 dotenv.config({path: '.env'});
 
 const server = new Koa();
@@ -24,6 +24,7 @@ try {
         console.log('Server is running on http://localhost:' + process.env.SERVER_PORT);
         await dbConnect();
         await redis.RedisConnection();
+        await RabbitMQConnection();
     });
 } catch (error) {
     console.error("Server::Exception handler:::", `${error}`);
