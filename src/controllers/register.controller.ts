@@ -12,7 +12,7 @@ const user:UserRepository = new UserRepository();
 
 export async function createNewUser(newUser: any, ctx: any): Promise<any> {
     try{
-        const registrationFormValidation = await validateNewUser(newUser);
+        const registrationFormValidation = await validateNewUser(ctx.request.body);
         if (registrationFormValidation === true){
            const encryptPassword = await AuthUtil.encryptPassword(newUser.password);
            const result = await user.createUser(newUser,encryptPassword,"user");

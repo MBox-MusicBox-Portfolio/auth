@@ -46,7 +46,6 @@ export async function RedisSetValue(key: string, object: any): Promise<void> {
 export async function RedisExistKey(key: string): Promise<any> {
     try {
         const keyRedis = await redis.exists(`${process.env.AUTH_REDIS_REC}`+key);
-        console.log(key);
         return keyRedis === 1;
     } catch (ex) {
         console.error(`[${new Date().toLocaleString()}] : Redis module::RedisExistsKey function : `, `${ex}`);

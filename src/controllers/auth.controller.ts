@@ -12,8 +12,9 @@ const user : UserRepository = new UserRepository();
  * @param object
  * @param ctx
  */
-export async function authUser(currentUser: any, ctx: any): Promise<any> {
+export async function authUser(ctx: any): Promise<any> {
     try {
+        const currentUser= ctx.request.body;
         const authFormValidation = await validateAuth(currentUser);
         if (authFormValidation === true){
               const findUser = await user.findUser(currentUser.email);
