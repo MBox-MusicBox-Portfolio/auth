@@ -83,7 +83,7 @@ router.post('/api/auth/login', async (ctx) => {
  *         description: Returns an object containing validation errors. 
  */
 router.post('/api/auth/register', async (ctx) => {
-    ctx.body = await createNewUser(ctx.request.body, ctx);
+    ctx.body = await createNewUser(ctx);
 });
 
 /**
