@@ -50,7 +50,7 @@ router.use(bodyParser());
  */
 router.post('/api/auth/login', async (ctx) => {
     try{
-      ctx.body = await authUser(ctx.request.body,ctx);
+      ctx.body = await authUser(ctx);
     }catch(err:any)
     {
       ctx.body = AuthUtil.handleInternalServerError(AuthMessages.InternalServerError,ctx);
@@ -109,7 +109,7 @@ router.post('/api/auth/register', async (ctx) => {
  *         description: Internal server error. 
  */
 router.delete('/api/auth/logout', async (ctx) => {
-    ctx.body = await logoutUser(ctx,ctx);
+    ctx.body = await logoutUser(ctx);
 });
 
 
