@@ -28,7 +28,7 @@ export async function RedisConnection(): Promise<void> {
  */
 export async function RedisSetValue(key: string, object: any): Promise<void> {
     try {
-        await redis.set(key, JSON.stringify(object), {
+        await redis.set(`${process.env.AUTH_REDIS_REC}` + key, JSON.stringify(object), {
             EX: 36600,
             NX: true
         });
@@ -45,9 +45,9 @@ export async function RedisSetValue(key: string, object: any): Promise<void> {
  */
 export async function RedisExistKey(key: string): Promise<any> {
     try {
-        const keyRedis = await redis.exists(key);
-        const existKey = keyRedis ? keyRedis : `[${new Date().toLocaleString()}] : Redis module::RedisExistsKey function : Redis key  has not found!`;
-        return existKey;
+        const keyRedis = await redis.exists(`${process.env.AUTH_REDIS_REC}`+key);
+        console.log(key);
+        return keyRedis === 1;
     } catch (ex) {
         console.error(`[${new Date().toLocaleString()}] : Redis module::RedisExistsKey function : `, `${ex}`);
     }
@@ -61,7 +61,7 @@ export async function RedisExistKey(key: string): Promise<any> {
  */
 export async function RedisDelKey(key: string): Promise<any> {
     try {
-        return (await redis.del(key));
+        return (await redis.del(`${process.env.AUTH_REDIS_REC}`+key));
     } catch (err) {
         return err
     }
@@ -76,7 +76,7 @@ export async function RedisDelKey(key: string): Promise<any> {
 
 export async function RedisGetValue(key: string): Promise<any> {
     try {
-        return (await redis.get(key));
+        return (await redis.get(`${process.env.AUTH_REDIS_REC}`+key));
     } catch (ex) {
         console.error(`[${new Date().toLocaleString()}] : Redis module::RedisGetValue function: ${ex}`);
     }

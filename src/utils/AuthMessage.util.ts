@@ -5,5 +5,8 @@ export enum AuthMessages {
     UserIsBanned = "You have been banned because your actions violate our platform's policy and rules. Please contact the administrator to receive more details about this.",
     IncorrectPassword = "Incorrect password. Please check your password",
     RestorePassword= "We’ve sent you an email with instructions to reset your password!",
-    InternalServerError="An internal server error occurred. Please contact the administrator!"
+    InternalServerError="An internal server error occurred. Please contact the administrator!",
+    MissingToken ="Token not recieved",
+    LogoutSuccess="Logout successful!",
+    LogoutFailed="Logout failed: token does not exist"
 } 

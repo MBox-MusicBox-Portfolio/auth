@@ -6,6 +6,7 @@ import { koaSwagger } from 'koa2-swagger-ui';
 import swaggerDocGenerator from 'swagger-jsdoc';
 import * as AuthUtil from "../utils/AuthUtil.utils";
 import { AuthMessages } from "../utils/AuthMessage.util";
+import { logoutUser } from "../controllers/logout.controller";
 
 const router: Router = new Router();
 const options = {
@@ -91,15 +92,24 @@ router.post('/api/auth/register', async (ctx) => {
  *   delete:
  *     summary: Logout user
  *     description: Logout the user.
+ *     parameters:
+ *       - in: header
+ *         name: authorization
+ *         required: true
+ *         description: Bearer token for logout.
+ *         schema:
+ *           type: string
+ *           example: Bearer <your_token>
  *     responses:
  *       200:
  *         description: Successfully logged out.
  *       400: 
- *         description: Returns an object containing validation errors. 
+ *         description: Returns an object containing validation errors.
+ *       500:
+ *         description: Internal server error. 
  */
 router.delete('/api/auth/logout', async (ctx) => {
-    ctx.body = "";
-    // TODO: удалить токены и куки
+    ctx.body = await logoutUser(ctx,ctx);
 });
 
 
