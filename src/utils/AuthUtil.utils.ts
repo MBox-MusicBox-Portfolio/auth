@@ -29,7 +29,7 @@ export async function generateTokenForAuth(user: any): Promise<any> {
  */
 export async function createRedisRecordForAuth(user: any, jwt: string): Promise<any> {
     try {
-        await redis.RedisSetValue("AuthKey" + jwt, {
+        await redis.RedisSetValue(jwt, {
               id: user.dataValues.Id,
               username: user.dataValues.Username,
               avatar: user.dataValues.Avatar,
@@ -40,6 +40,28 @@ export async function createRedisRecordForAuth(user: any, jwt: string): Promise<
     }
 }
 
+export async function RedisExistKey(key:string):Promise<boolean>{
+    try{
+        const keyRedis = await redis.RedisExistKey(key);
+        return keyRedis !== false ? true : false;
+    }catch(err:any){
+        console.debug(err);
+        return false;
+    }
+}
+
+export async function RedisDeleteKey(keyName:string):Promise<any>{
+    try{
+        const redisKeyExist = await RedisExistKey(keyName);
+        if(redisKeyExist === true) { await redis.RedisDelKey(keyName);}
+        return redisKeyExist;
+    }catch(err:any){
+        console.debug(err);
+        return false;
+    }
+}
+
+
 export function handleFailedValidation(errorContext:any,ctx:any) : any
 {
     ctx.status = HttpStatusCode.BadRequest;
@@ -49,12 +71,18 @@ export function handleFailedValidation(errorContext:any,ctx:any) : any
 export function handleAppValidation(errorContext:any,ctx:any)
 {
     ctx.status = HttpStatusCode.BadRequest;
-    return authDTO(false,null,null,errorContext);
+    return authDTO(false,null,null,null,errorContext);
 }
 
 export function handleInternalServerError(errorContext:any,ctx:any)
 {
     ctx.status = HttpStatusCode.InternalServerError;
+    return authDTO(false,null,null,errorContext);
+}
+
+export function handleUnauthorized(errorContext:any,ctx:any)
+{
+    ctx.status = HttpStatusCode.Unauthorized;
     return authDTO(false,null,null,errorContext);
 }
 
@@ -80,6 +108,12 @@ export async function handleSuccessfulAuth(user:any, ctx:any):Promise<any>
 export function handleSuccessfulRegister(message:string,ctx:any):any
 {
     ctx.status=HttpStatusCode.Created;
+    return authDTO(true,null,message,null,null);
+}
+
+export function handleSuccessLogout(message:string,ctx:any):any
+{
+    ctx.status=HttpStatusCode.OK;
     return authDTO(true,null,message,null,null);
 }
 

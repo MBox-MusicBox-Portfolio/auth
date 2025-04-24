@@ -4,7 +4,7 @@ interface IAuthDTO {
     accessToken?: string;
     message?:string;
     validationErrors?: any;
-    appValidation?: any;
+    appErrorValidation?: any;
 }
 
 export const authDTO = (
@@ -21,7 +21,7 @@ export const authDTO = (
     } else if (!successOperation && validationErrors) {
         dtoAuth.value = {validationError:validationErrors};
     }else if(!successOperation && appValidation){
-        dtoAuth.value = {appValidation:appValidation}
+        dtoAuth.value = {appErrorValidation:appValidation}
     }else if(successOperation && message){
         dtoAuth.value = {message:message};
     }
