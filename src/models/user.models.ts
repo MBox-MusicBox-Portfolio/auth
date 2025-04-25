@@ -1,6 +1,7 @@
-import {DataTypes} from 'sequelize';
-import Roles from './roles.models'
+import { DataTypes } from 'sequelize';
+import { Roles} from './roles.models'
 import {db} from '../modules/db.modules';
+
 
 export const User = db.define('Users', {
     Id: {
@@ -43,4 +44,3 @@ export const User = db.define('Users', {
 
 User.belongsTo(Roles, {foreignKey: 'RoleId', targetKey: 'Id'});
 Roles.hasMany(User, {foreignKey: 'RoleId'});
-export default User;

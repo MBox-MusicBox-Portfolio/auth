@@ -1,7 +1,7 @@
 import {DataTypes} from 'sequelize';
 import {db} from '../modules/db.modules';
-
-const Roles = db.define('Roles', {
+ 
+export const Roles = db.define('Roles', {
     Id: {
         type: DataTypes.STRING(36),
         primaryKey: true,
@@ -16,4 +16,3 @@ const Roles = db.define('Roles', {
     tableName: 'Roles',
     timestamps: false
 });
-export default Roles

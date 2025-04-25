@@ -1,10 +1,10 @@
 'use strict'
-import {validateAuth} from './validations/controller.validations';
-import { checkUserData } from '../services/auth.services';
-import { UserRepository } from '../repository/implementations/user.implementation';
-import * as AuthUtil from '../utils/AuthUtil.utils';
-import { AuthMessages } from '../utils/AuthMessage.util';
-
+import { AuthValidator } from '../validations/auth/auth.validations';
+import { AuthService } from '../../services/auth/auth.services';
+import { UserRepository } from '../../repository/implementations/user.implementation';
+import { AuthUtil } from '../../utils/auth/AuthUtil.utils';
+import { AuthMessages } from '../../utils/messages/AuthMessage.enum';
+ 
 const user : UserRepository = new UserRepository();
 
 /**
@@ -15,10 +15,10 @@ const user : UserRepository = new UserRepository();
 export async function authUser(ctx: any): Promise<any> {
     try {
         const currentUser= ctx.request.body;
-        const authFormValidation = await validateAuth(currentUser);
+        const authFormValidation = await AuthValidator.validateAuth(currentUser);
         if (authFormValidation === true){
               const findUser = await user.findUser(currentUser.email);
-              const userDataChecked = await checkUserData(findUser, ctx.request.body.password);
+              const userDataChecked = await AuthService.checkUserData(findUser, ctx.request.body.password);
             return userDataChecked === true 
                    ? await AuthUtil.handleSuccessfulAuth(findUser,ctx) 
                    : AuthUtil.handleAppValidation(userDataChecked,ctx); 
