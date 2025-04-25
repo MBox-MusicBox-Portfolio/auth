@@ -1,4 +1,4 @@
-interface IAuthDTO {
+export interface IAuthDTO {
     success: boolean;
     value:any;
     accessToken?: string;
@@ -27,3 +27,19 @@ export const authDTO = (
     }
     return dtoAuth;
 };
+
+export function handleValidationError(errorContext:string):IAuthDTO {
+    return authDTO(false,null,null,errorContext);
+}
+
+export function handleAppValidationError(errorContext:string):IAuthDTO {
+    return authDTO(false,null,null,null,errorContext);
+}    
+
+export function handleAuthSuccess(jwt:string):IAuthDTO {
+    return authDTO(true,jwt);
+}
+
+export function handleSuccessMessage(message:string):IAuthDTO {
+    return authDTO(true,null,message);
+}
