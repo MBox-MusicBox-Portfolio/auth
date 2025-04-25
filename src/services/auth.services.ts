@@ -13,12 +13,18 @@ const userIsExist = (currentUser: any): boolean => {
     return currentUser !== null && currentUser !== undefined;
 }
 
+const userEmailConfirmed = (currentUser: any): boolean => {
+    return currentUser?.dataValues.IsEmailVerify;
+}
 
 export const checkUserData = async (currentUser: any, entriedPassword: string):Promise<string | boolean> => {
     if (!userIsExist(currentUser)) {
         return AuthMessages.UserNotFound;
     }
 
+    if (!userEmailConfirmed(currentUser)) {
+        return AuthMessages.EmailIsNotConfirmed;
+    }
     if (isBlockedUser(currentUser)) {
          return AuthMessages.UserIsBanned;
     }

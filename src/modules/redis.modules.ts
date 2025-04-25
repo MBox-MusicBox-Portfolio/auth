@@ -26,10 +26,10 @@ export async function RedisConnection(): Promise<void> {
  * @param {*} key
  * @param {*} object
  */
-export async function RedisSetValue(key: string, object: any): Promise<void> {
+export async function RedisSetValue(key: string, expire: number , object: any): Promise<void> {
     try {
-        await redis.set(`${process.env.AUTH_REDIS_REC}` + key, JSON.stringify(object), {
-            EX: 36600,
+        await redis.set(`${key}` + key, JSON.stringify(object), {
+            EX: expire,
             NX: true
         });
     } catch (error) {

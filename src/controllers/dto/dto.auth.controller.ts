@@ -4,7 +4,7 @@ interface IAuthDTO {
     accessToken?: string;
     message?:string;
     validationErrors?: any;
-    appErrorValidation?: any;
+    appErrorValidation?: any; 
 }
 
 export const authDTO = (
@@ -12,7 +12,7 @@ export const authDTO = (
     token: string | null = null,
     message:string| null = null,
     validationErrors: any = null,
-    appValidation:any = null
+    appValidation:any = null,
 ): IAuthDTO => {
 
     const dtoAuth: IAuthDTO = { success: successOperation, value:null};
