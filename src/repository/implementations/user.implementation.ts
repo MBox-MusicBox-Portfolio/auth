@@ -1,7 +1,7 @@
-import User from "../models/user.models";
+import User from "../../models/user.models";
 import {v4 as uuidv4} from 'uuid';
-import { RoleRepository } from "./role.repository";
-import {IUserRepository} from "./interfaces/IUserRepository.interface"
+import { RoleRepository } from "../implementations/role.implementation";
+import {IUserRepository} from "../interfaces/IUserRepository.interface"
 
 
 

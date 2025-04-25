@@ -1,7 +1,7 @@
 'use strict'
 import {validateAuth} from './validations/controller.validations';
 import { checkUserData } from '../services/auth.services';
-import { UserRepository } from '../repository/user.repository';
+import { UserRepository } from '../repository/implementations/user.implementation';
 import * as AuthUtil from '../utils/AuthUtil.utils';
 import { AuthMessages } from '../utils/AuthMessage.util';
 
