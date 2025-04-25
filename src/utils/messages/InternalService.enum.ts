@@ -1,5 +1,6 @@
 export enum InternalServiceMessage{
     RabbitMQModuleTitle="RabbitMQ module: ",
+    RedisModuleTitle="Redis module: ",
     RabbitMQConnectionError= RabbitMQModuleTitle   + "Missing connection object",
     RabbitMQCreateChannelError=RabbitMQModuleTitle + "RabbitMQ can't create channel: ",
     RabbitMQConnectionSuccess=RabbitMQModuleTitle  + "RabbitMQ connection success",

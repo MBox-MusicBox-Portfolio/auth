@@ -27,6 +27,7 @@ export async function createRedisRecordForConfirmationEmail(user:any,jwt:string)
  */
 export async function createRedisRecordForAuth(user: any, jwt: string): Promise<any> {
     try {
+    
         await redis.RedisSetValue(process.env.AUTH_REDIS_REC + jwt,36000,{
               id: user.dataValues.Id,
               username: user.dataValues.Username,
