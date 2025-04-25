@@ -21,7 +21,7 @@ export async function authUser(ctx: any): Promise<any> {
               const userDataChecked = await checkUserData(findUser, ctx.request.body.password);
             return userDataChecked === true 
                    ? await AuthUtil.handleSuccessfulAuth(findUser,ctx) 
-                   : AuthUtil.handleNotFound(userDataChecked,ctx); 
+                   : AuthUtil.handleAppValidation(userDataChecked,ctx); 
         } else {
             return AuthUtil.handleFailedValidation(authFormValidation,ctx);
         }

@@ -27,6 +27,7 @@ export class UserRepository implements IUserRepository{
             Id: uuidv4(),
             Name: newUser.username,
             Email: newUser.email,
+            IsEmailVerify: false,
             RoleId: roleId.dataValues.Id,
             Password: hashedPassword
       });

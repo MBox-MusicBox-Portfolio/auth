@@ -7,6 +7,7 @@ import swaggerDocGenerator from 'swagger-jsdoc';
 import * as AuthUtil from "../utils/AuthUtil.utils";
 import { AuthMessages } from "../utils/AuthMessage.util";
 import { logoutUser } from "../controllers/logout.controller";
+import { confirmUserEmail } from "../controllers/emailConfirm.controller";
 
 const router: Router = new Router();
 const options = {
@@ -86,6 +87,8 @@ router.post('/api/auth/register', async (ctx) => {
     ctx.body = await createNewUser(ctx);
 });
 
+
+
 /**
  * @openapi
  * /api/auth/logout:
@@ -113,6 +116,11 @@ router.delete('/api/auth/logout', async (ctx) => {
 });
 
 
+router.get('/api/auth/confirmEmail/:token', async (ctx) => {
+  console.log(ctx.params.token);
+    ctx.body = await confirmUserEmail(ctx);
+});
+
 router.get('/api/auth/docs', koaSwagger({
     title:"Auth API",
     routePrefix: false,
@@ -120,5 +128,4 @@ router.get('/api/auth/docs', koaSwagger({
       spec: openapiSpecification as Record<string, unknown>
     }
   }));
-
 export default router;
