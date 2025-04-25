@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import * as AuthUtil from '../utils/AuthUtil.utils';
 import { AuthMessages } from '../utils/AuthMessage.util';
-import { UserRepository } from '../repository/user.repository';
+import { UserRepository } from '../repository/implementations/user.implementation';
 
 dotenv.config();
 export async function confirmUserEmail(ctx: any): Promise<any> {

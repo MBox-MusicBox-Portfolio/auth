@@ -1,5 +1,5 @@
-import Roles from "../models/roles.models";
-import {IRoleRepository} from "./interfaces/IRoleRepository.interface"
+import Roles from "../../models/roles.models";
+import {IRoleRepository} from "../interfaces/IRoleRepository.interface"
 
 export class RoleRepository implements IRoleRepository
 {
