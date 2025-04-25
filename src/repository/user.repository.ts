@@ -22,16 +22,21 @@ export class UserRepository implements IUserRepository{
 
   public async createUser(newUser:any, hashedPassword:string, roleName:string): Promise<any> {
     try{
-      const roleId:any = await this.getDefaultUserRole(roleName);
-      await User.create({
-            Id: uuidv4(),
-            Name: newUser.username,
-            Email: newUser.email,
-            IsEmailVerify: false,
-            RoleId: roleId.dataValues.Id,
-            Password: hashedPassword
-      });
-      return true;
+       const userExist = await this.findUser(newUser.email);
+        if(!userExist){
+          const roleId:any = await this.getDefaultUserRole(roleName);
+            await User.create({
+                  Id: uuidv4(),
+                  Name: newUser.username,
+                  Email: newUser.email,
+                  IsEmailVerify: false,
+                  RoleId: roleId.dataValues.Id,
+                  Password: hashedPassword
+            });
+           return true;
+        }else{
+           return false;
+      }
   }catch(err:any){
      return err;
   }  
