@@ -1,5 +1,6 @@
 import * as yup from 'yup'
-import { ValidationMessages } from '../../utils/ValidationMessage.util';
+import { ValidationMessages } from '../../../utils/messages/ValidationMessage.enum';
+export namespace AuthValidator{
 
 const userRegisterSchema = yup.object().shape({
     username: yup.string()
@@ -53,4 +54,5 @@ export async function validateAuth(object: any): Promise<any> {
     } catch (error: any) {
         return error.errors; 
     }
+  }
 }

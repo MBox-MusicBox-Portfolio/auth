@@ -1,6 +1,9 @@
 //import bcrypt from 'bcrypt';
-import { AuthMessages } from '../utils/AuthMessage.util';
-import * as AuthUtil from '../utils/AuthUtil.utils';
+import { AuthMessages } from '../../utils/messages/AuthMessage.enum';
+import { AuthUtil } from '../../utils/auth/AuthUtil.utils';
+
+export namespace AuthService {
+
 const checkPass = async (currentPassword:string , existUserPassword:string) : Promise<boolean> =>{
     return await AuthUtil.comparePass(currentPassword,existUserPassword);
 }
@@ -33,4 +36,5 @@ export const checkUserData = async (currentUser: any, entriedPassword: string):P
         return AuthMessages.IncorrectPassword;
     }
     return true; 
+  }
 }

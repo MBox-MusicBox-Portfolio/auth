@@ -1,13 +1,13 @@
 import Router from "@koa/router";
-import {bodyParser} from '@koa/bodyparser';
-import {createNewUser} from "../controllers/register.controller";
-import {authUser} from "../controllers/auth.controller";
+import { bodyParser} from '@koa/bodyparser';
+import { createNewUser } from "../controllers/auth/register.controller";
+import { authUser } from "../controllers/auth/auth.controller";
 import { koaSwagger } from 'koa2-swagger-ui';
 import swaggerDocGenerator from 'swagger-jsdoc';
-import * as AuthUtil from "../utils/AuthUtil.utils";
-import { AuthMessages } from "../utils/AuthMessage.util";
-import { logoutUser } from "../controllers/logout.controller";
-import { confirmUserEmail } from "../controllers/emailConfirm.controller";
+import { AuthUtil } from "../utils/auth/AuthUtil.utils";
+import { AuthMessages } from "../utils/messages/AuthMessage.enum";
+import { logoutUser } from "../controllers/auth/logout.controller";
+import { confirmUserEmail } from "../controllers/auth/emailConfirm.controller";
 
 const router: Router = new Router();
 const options = {

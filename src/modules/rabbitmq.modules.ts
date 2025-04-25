@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import * as rabbit from 'amqplib';
-import { InternalServiceMessage } from '../utils/InternalService.utils';
+import { InternalServiceMessage } from '../utils/messages/InternalService.enum';
 
 dotenv.config();
 let connection: rabbit.ChannelModel | null;
