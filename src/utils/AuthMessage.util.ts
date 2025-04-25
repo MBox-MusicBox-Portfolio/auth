@@ -9,6 +9,7 @@ export enum AuthMessages {
     RestorePassword= "We’ve sent you an email with instructions to reset your password!",
     InternalServerError="An internal server error occurred. Please contact the administrator!",
     MissingToken ="Token not recieved",
+    TokenExpired="Authentication terms is expired",
     LogoutSuccess="Logout successful!",
     LogoutFailed="Logout failed: token does not exist"
 } 
