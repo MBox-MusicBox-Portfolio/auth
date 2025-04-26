@@ -50,12 +50,23 @@ export function handleSuccessLogout(message:string,ctx:Context):authDTO.IAuthDTO
     return authDTO.handleSuccessMessage(message);
 }
 
-export function generateLinkForEmailVerification(token:string):string
+export function handleSuccessEmailVerification(message:string,ctx:Context):authDTO.IAuthDTO
 {
-    const link = "http://"+process.env.HTTP_SERVER +"/api/auth/confirmEmail/"+token;
-    return link;
+    ctx.status=HttpStatusCode.OK;
+    return authDTO.handleSuccessMessage(message);
 }
 
+export function handleErrorEmailVerification(message:string,ctx:Context):authDTO.IAuthDTO
+{
+    ctx.status=HttpStatusCode.Forbidden;
+    return authDTO.handleAppValidationError(message);
+}
+
+export function generateLinkForEmailVerification(token:string):string
+{
+    const link = "http://"+process.env.HTTP_SERVER +"/api/auth/confirmEmail/"+process.env.EMAIL_VERIFICATION_TOKEN + token;
+    return link;
+}
 
 /**
  * For successfull authorization
@@ -100,6 +111,7 @@ export async function prepareEmailVerification(userData: any): Promise<{ token: 
       const token = await TokenUtil.generateTokenForEmailVerification(userData);
       const redisKey = await createRedisRecordForConfirmationEmail(userData, token);
       const link =  generateLinkForEmailVerification(token);
+      console.log("Link for email verification: ", link);
     return { token, redisKey, link };
 }
 
@@ -110,4 +122,13 @@ export const comparePass = async (currentPassword:string, existUserPassword:stri
 export const encryptPassword = async(password:string):Promise<any>=>{
      return await bcrypt.hash(password, process.env.PASS_SALT!);
  }
+
+ export const decryptToken = async (currentJwt: string): Promise<any> => {
+    try {
+        return await TokenUtil.decryptToken(currentJwt);
+    } catch (err: any) {
+        console.debug(err);
+    }
 }
+}
+

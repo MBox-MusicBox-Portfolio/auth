@@ -12,8 +12,8 @@ const encrypt = (user: any): string => {
     });
 }
 
-const decode = (token: string): any => {
-    return jwt.verify(token, `${process.env.JWT_SECRET}`);
+const decode = async (token: string): Promise<any> => {
+    return await jwt.verify(token, `${process.env.JWT_SECRET!}`);
 }
 
 export async function token(operation: string, data: any): Promise<any> {
@@ -23,9 +23,9 @@ export async function token(operation: string, data: any): Promise<any> {
                 const token = encrypt(data);
                 return typeof (token) == "string" ? token : undefined;
             case "decrypt" :
-                return typeof (data) == "string" ? decode(data) : "Token module :: Token must be a string ";
+                return typeof (data) == "string" ? decode(data) : null;
             default:
-                return "Token module :: Unknown operation";
+                console.error("Token module :: Unknown operation");
         }
     } else {
         throw new Error("Token Module::Global variable isn't set");

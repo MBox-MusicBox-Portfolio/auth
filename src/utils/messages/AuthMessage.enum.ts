@@ -10,6 +10,7 @@ export enum AuthMessages {
     InternalServerError="An internal server error occurred. Please contact the administrator!",
     MissingToken ="Token not recieved",
     TokenExpired="Authentication terms is expired",
+    NotValidTokenSignature="Credential signature isn't valid",
     LogoutSuccess="Logout successful!",
     LogoutFailed="Logout failed: token does not exist"
 } 
