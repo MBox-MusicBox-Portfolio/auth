@@ -42,6 +42,7 @@ export async function createRedisRecordForAuth(user: any, jwt: string): Promise<
 export async function RedisExistKey(key:string):Promise<boolean>{
     try{
         const keyRedis = await redis.RedisExistKey(key);
+        console.log(keyRedis);
         return keyRedis !== false;
     }catch(err:any){
         console.debug(err);
@@ -49,7 +50,7 @@ export async function RedisExistKey(key:string):Promise<boolean>{
     }
 }
 
-export async function RedisDeleteKey(keyName:string):Promise<any>{
+export async function RedisDeleteKey(keyName:string):Promise<boolean>{
     try{
         const redisKeyExist = await RedisExistKey(keyName);
         if(redisKeyExist) { await redis.RedisDelKey(keyName);}

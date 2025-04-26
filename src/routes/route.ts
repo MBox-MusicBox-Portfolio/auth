@@ -117,7 +117,6 @@ router.delete('/api/auth/logout', async (ctx) => {
 
 
 router.get('/api/auth/confirmEmail/:token', async (ctx) => {
-  console.log(ctx.params.token);
     ctx.body = await confirmUserEmail(ctx);
 });
 

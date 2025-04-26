@@ -26,4 +26,14 @@ export async function generateTokenForAuth(user: any): Promise<any> {
          console.debug(err);
        } 
     }
+
+
+export async function decryptToken(currentJwt: string): Promise<any> {
+    try{
+        
+        return await token("decrypt", currentJwt);
+    }catch(err:any){
+        console.debug(err);
+        }
+    }
 }

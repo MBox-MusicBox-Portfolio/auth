@@ -3,18 +3,16 @@ import {v4 as uuidv4} from 'uuid';
 import { RoleRepository } from "./role.implementation";
 import { IUserRepository} from "../interfaces/IUserRepository.interface"
 
-
-
 export class UserRepository implements IUserRepository{
   protected role:RoleRepository; 
   
   public constructor(){
       this.role = new RoleRepository();
-   }
+  }
 
   protected async getDefaultUserRole(roleName: string): Promise<any>{
     return await this.role.findRole(roleName);  
-   }
+  }
 
   public async findUser(email:string): Promise<any | null> {
     return await User.findOne({where: {Email:email}});
@@ -40,5 +38,16 @@ export class UserRepository implements IUserRepository{
   }catch(err:any){
      return err;
   }  
- }
+  }
+
+  public async updateUser(userObject:any): Promise<boolean> {
+    try{
+        await User.update({IsEmailVerify:userObject.data.confirmEmail},{
+                           where: {Email:userObject.data.email}});
+         return true;
+    }catch(err:any){
+         console.debug(err);
+        return false;
+    }
+  }
 }
