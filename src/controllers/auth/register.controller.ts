@@ -5,6 +5,7 @@ import { AuthValidator} from '../validations/auth/auth.validations';
 import { UserRepository } from '../../repository/implementations/user.implementation';
 import { AuthUtil } from '../../utils/auth/AuthUtil.utils';
 import { AuthMessages } from '../../utils/messages/AuthMessage.enum';
+import { SendQuery } from '../../modules/rabbitmq.modules';
 
 dotenv.config();
 const user:UserRepository = new UserRepository();
@@ -17,6 +18,7 @@ export async function createNewUser(ctx: any): Promise<any> {
            const result = await user.createUser(ctx.request.body,encryptPassword,"user");
             if(result === true){
                   const { token, redisKey, link } = await AuthUtil.prepareEmailVerification(ctx.request.body);
+                  await SendQuery(ctx.request.body.email, "register_mail", ctx.request.body.username);
                 return AuthUtil.handleSuccessfulRegister(AuthMessages.UserCreatedSuccessfully,ctx)
             }else{
                return  AuthUtil.handleAppValidation(AuthMessages.UserAlreadyExists,ctx);

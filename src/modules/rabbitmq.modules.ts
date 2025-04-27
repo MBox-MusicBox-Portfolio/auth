@@ -6,7 +6,8 @@ dotenv.config();
 let connection: rabbit.ChannelModel | null;
 let channel: rabbit.Channel | null;
 const connectString : string = process.env.CONNECTION_URI_RABITMQ!;
-const queue:string = process.env.RABBITMQ_QUEUE_NAME!;
+//const queue:string = process.env.RABBITMQ_QUEUE_NAME!;
+const queue:string = "queue_mailer";
 
 const initRabbitMQConnection = async ():Promise<boolean> => {
     try{
@@ -40,15 +41,14 @@ export async function RabbitMQConnection():Promise<boolean>{
  * @param template Шаблон сообщения
  * @param username Имя пользователя
  */
-export async function SendQuery(redisKey: string, email: string, template: string, username: string){
+export async function SendQuery(email: string, template: string, username: string){
     try {
         if(await initRabbitMQConnection())
         {
             await channel!.assertQueue(queue, { durable: false });
             const message = {
-                To: email,
-                Id: redisKey,
                 Body: {
+                    Email: email,
                     Template: template,
                     Name: username,
                 },
