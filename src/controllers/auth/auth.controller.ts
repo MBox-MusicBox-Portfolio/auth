@@ -26,7 +26,6 @@ export async function authUser(ctx: any): Promise<any> {
             return AuthUtil.handleFailedValidation(authFormValidation,ctx);
         }
     } catch (error:any) {
-        console.debug(error);
         return AuthUtil.handleInternalServerError(AuthMessages.InternalServerError,ctx);
     }
 }
