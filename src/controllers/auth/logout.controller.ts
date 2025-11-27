@@ -15,7 +15,6 @@ export async function logoutUser(ctx: any): Promise<any>
                : AuthUtil.handleAppValidation(AuthMessages.LogoutFailed,ctx);
        } 
     } catch (error:any) {
-         console.debug(error);
         return AuthUtil.handleInternalServerError(AuthMessages.InternalServerError,ctx);
     } 
 }
