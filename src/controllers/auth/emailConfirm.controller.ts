@@ -28,7 +28,6 @@ export async function confirmUserEmail(ctx: any): Promise<any> {
             }
         }
     } catch (error: any) {
-           console.debug(error);
         return AuthUtil.handleInternalServerError(AuthMessages.InternalServerError, ctx);
     }
 }
