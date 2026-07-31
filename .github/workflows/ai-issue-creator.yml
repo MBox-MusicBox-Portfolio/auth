@@ -10,6 +10,7 @@ permissions:
   contents: read
   issues: write
 
+
 jobs:
   analyze-and-create-issue:
 
@@ -32,12 +33,13 @@ jobs:
               -o -name "*.ts" \
               -o -name "*.tsx" \
               -o -name "*.py" \
-              -o -name "*.json" \
               -o -name "*.cpp" \
               -o -name "*.cs" \
             \) \
             -not -path "*/node_modules/*" \
             -not -path "*/.git/*" \
+            -not -path "*/dist/*" \
+            -not -path "*/build/*" \
             | while read file; do
 
               echo "--- File: $file ---" >> codebase.txt
@@ -47,11 +49,19 @@ jobs:
             done
 
 
+
       - name: Run AI Analysis
+
         env:
           OPENAI_API_KEY: ${{ secrets.CHATGPT_KEY }}
 
         run: |
+
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "CHATGPT_KEY отсутствует"
+            exit 1
+          fi
+
 
           CODE_TEXT=$(jq -Rs . codebase.txt)
 
@@ -59,19 +69,20 @@ jobs:
           PAYLOAD=$(jq -n \
             --arg code "$CODE_TEXT" \
             '{
-              model: "gpt-4o",
+              model: "gpt-4o-mini",
+              max_tokens: 2000,
               response_format: {
                 type: "json_object"
               },
               messages: [
                 {
                   role: "system",
-                  content:
-                  "Ты делаешь code review. Проанализируй код репозитория. Найди одну самую критическую проблему: безопасность, архитектура, баг или технический долг. Ответь строго JSON:
-                  {
-                    \"title\": \"Название Issue\",
-                    \"body\": \"Описание проблемы, файл, причина и способ исправления\"
-                  }"
+                  content: "Ты проводишь code review. Найди одну самую критическую проблему в коде. Это может быть уязвимость безопасности, архитектурная проблема, баг или технический долг.
+                  
+                  Ответ строго JSON без markdown:{
+                  \"title\": \"Название Issue\",
+                  \"body\": \"Описание проблемы, где находится проблема и как исправить\"
+                }"
                 },
                 {
                   role: "user",
@@ -81,44 +92,72 @@ jobs:
             }')
 
 
-          RESPONSE=$(curl -s \
+
+          curl -s \
             https://api.openai.com/v1/chat/completions \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer $OPENAI_API_KEY" \
-            -d "$PAYLOAD")
-
-
-          echo "$RESPONSE" > openai-response.json
-
-
-          jq -r \
-          '.choices[0].message.content' \
-          openai-response.json \
-          | jq . > gpt-output.json
+            -d "$PAYLOAD" \
+            > openai-response.json
 
 
 
-      - name: Validate AI Response
-        run: |
+          echo "===== OPENAI RESPONSE ====="
+          cat openai-response.json
 
-          if ! jq empty gpt-output.json; then
-            echo "AI вернул неправильный JSON"
-            cat gpt-output.json
+
+
+          ERROR=$(jq -r '.error.message // empty' openai-response.json)
+
+          if [ -n "$ERROR" ]; then
+            echo "OpenAI API error:"
+            echo "$ERROR"
             exit 1
           fi
 
 
-          TITLE=$(jq -r '.title' gpt-output.json)
 
-          if [ "$TITLE" = "null" ] || [ -z "$TITLE" ]; then
+          CONTENT=$(jq -r '.choices[0].message.content // empty' openai-response.json)
+
+
+          if [ -z "$CONTENT" ]; then
+            echo "OpenAI не вернул content"
+            cat openai-response.json
+            exit 1
+          fi
+
+
+
+          echo "$CONTENT" > gpt-output.json
+
+
+
+      - name: Validate AI Response
+
+        run: |
+
+          echo "===== AI OUTPUT ====="
+          cat gpt-output.json
+
+
+          if ! jq empty gpt-output.json; then
+            echo "AI вернул неправильный JSON"
+            exit 1
+          fi
+
+
+          TITLE=$(jq -r '.title // empty' gpt-output.json)
+
+
+          if [ -z "$TITLE" ]; then
             echo "Нет title"
-            cat gpt-output.json
             exit 1
           fi
 
 
 
       - name: Create GitHub Issue
+
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
