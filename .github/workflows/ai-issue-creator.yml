@@ -16,7 +16,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Шаг 1: Собираем файлы проекта в один контекст для ИИ
       - name: Prepare Code Context
         run: |
           echo "=== CODEBASE ANALYSIS ===" > codebase.txt
@@ -26,10 +25,10 @@ jobs:
             echo -e "\n" >> codebase.txt
           done
 
-      # Шаг 2: Делаем запрос напрямую в OpenAI через curl
       - name: Run AI Analysis
         run: |
-          CODE_TEXT=$(cat codebase.txt | jq -aR .)
+          CODE_TEXT=$(cat codebase.txt | jq -sR .)
+          
           PAYLOAD=$(jq -n \
             --arg prompt "Проанализируй файлы в этом репозитории. Найди критические уязвимости, архитектурные проблемы или места, требующие рефакторинга. Сформулируй ОДНУ самую важную проблему. Ответь строго в формате JSON без markdown разметки: {\"title\": \"Заголовок проблемы для Issue\", \"body\": \"Подробное описание проблемы, где она находится и как её исправить.\"}" \
             --arg code "$CODE_TEXT" \
@@ -46,9 +45,9 @@ jobs:
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer ${{ secrets.CHATGPT_KEY }}" \
             -d "$PAYLOAD")
-          echo "$RESPONSE" | jq -r '.choices[0].message.content' > gpt-output.json
+            
+          echo "$RESPONSE" | jq -r '.choices.message.content' > gpt-output.json
 
-      # Шаг 3: Читаем сохраненный json и создаем Issue
       - name: Create GitHub Issue
         run: |
           TITLE=$(cat gpt-output.json | jq -r '.title')
