@@ -1,31 +1,134 @@
-- name: Run AI Analysis
-  run: |
-    CODE_TEXT=$(jq -Rs . codebase.txt)
-    PAYLOAD=$(jq -n \
-      --arg prompt "Проанализируй файлы в этом репозитории. Найди критические уязвимости, архитектурные проблемы или места, требующие рефакторинга. Сформулируй ОДНУ самую важную проблему. Ответь строго в формате JSON без markdown: {\"title\":\"Заголовок\",\"body\":\"Описание проблемы и исправление\"}" \
-      --arg code "$CODE_TEXT" \
-      '{
-        model: "gpt-4o",
-        response_format: {
-          type: "json_object"
-        },
-        messages: [
-          {
-            role: "system",
-            content: $prompt
-          },
-          {
-            role: "user",
-            content: $code
-          }
-        ]
-      }')
+name: AI Code Analysis & Issue Creator
 
-    RESPONSE=$(curl -s https://api.openai.com/v1/chat/completions \
-      -H "Content-Type: application/json" \
-      -H "Authorization: Bearer ${{ secrets.CHATGPT_KEY }}" \
-      -d "$PAYLOAD")
+on:
+  schedule:
+    - cron: "0 0 * * 1"
 
-    echo "$RESPONSE" \
-      | jq -r '.choices[0].message.content' \
-      | jq . > gpt-output.json
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  analyze-and-create-issue:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+
+      - name: Prepare Code Context
+        run: |
+          echo "=== CODEBASE ANALYSIS ===" > codebase.txt
+
+          find . \
+            -type f \
+            \( \
+              -name "*.js" \
+              -o -name "*.ts" \
+              -o -name "*.tsx" \
+              -o -name "*.py" \
+              -o -name "*.json" \
+              -o -name "*.cpp" \
+              -o -name "*.cs" \
+            \) \
+            -not -path "*/node_modules/*" \
+            -not -path "*/.git/*" \
+            | while read file; do
+
+              echo "--- File: $file ---" >> codebase.txt
+              cat "$file" >> codebase.txt
+              echo -e "\n" >> codebase.txt
+
+            done
+
+
+      - name: Run AI Analysis
+        env:
+          OPENAI_API_KEY: ${{ secrets.CHATGPT_KEY }}
+
+        run: |
+
+          CODE_TEXT=$(jq -Rs . codebase.txt)
+
+
+          PAYLOAD=$(jq -n \
+            --arg code "$CODE_TEXT" \
+            '{
+              model: "gpt-4o",
+              response_format: {
+                type: "json_object"
+              },
+              messages: [
+                {
+                  role: "system",
+                  content:
+                  "Ты делаешь code review. Проанализируй код репозитория. Найди одну самую критическую проблему: безопасность, архитектура, баг или технический долг. Ответь строго JSON:
+                  {
+                    \"title\": \"Название Issue\",
+                    \"body\": \"Описание проблемы, файл, причина и способ исправления\"
+                  }"
+                },
+                {
+                  role: "user",
+                  content: $code
+                }
+              ]
+            }')
+
+
+          RESPONSE=$(curl -s \
+            https://api.openai.com/v1/chat/completions \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $OPENAI_API_KEY" \
+            -d "$PAYLOAD")
+
+
+          echo "$RESPONSE" > openai-response.json
+
+
+          jq -r \
+          '.choices[0].message.content' \
+          openai-response.json \
+          | jq . > gpt-output.json
+
+
+
+      - name: Validate AI Response
+        run: |
+
+          if ! jq empty gpt-output.json; then
+            echo "AI вернул неправильный JSON"
+            cat gpt-output.json
+            exit 1
+          fi
+
+
+          TITLE=$(jq -r '.title' gpt-output.json)
+
+          if [ "$TITLE" = "null" ] || [ -z "$TITLE" ]; then
+            echo "Нет title"
+            cat gpt-output.json
+            exit 1
+          fi
+
+
+
+      - name: Create GitHub Issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+        run: |
+
+          TITLE=$(jq -r '.title' gpt-output.json)
+
+          BODY=$(jq -r '.body' gpt-output.json)
+
+
+          gh issue create \
+            --title "$TITLE" \
+            --body "$BODY"
