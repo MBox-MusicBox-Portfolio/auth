@@ -16,23 +16,50 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Шаг 1: Собираем файлы проекта в один контекст для ИИ
+      - name: Prepare Code Context
+        run: |
+          echo "=== CODEBASE ANALYSIS ===" > codebase.txt
+          find . -type f \( -name "*.js" -o -name "*.ts" -o -name "*.py" -o -name "*.json" -o -name "*.cpp" -o -name "*.cs" \) -not -path "*/node_modules/*" -not -path "*/.git/*" | while read file; do
+            echo "--- File: $file ---" >> codebase.txt
+            cat "$file" >> codebase.txt
+            echo -e "\n" >> codebase.txt
+          done
+
+      # Шаг 2: Делаем запрос напрямую в OpenAI через curl
       - name: Run AI Analysis
-        uses: originalorange/gpt-action@v2
-        with:
-          openai-api-key: ${{ secrets.CHATGPT_KEY }}
-          openai-model: 'gpt-4o'
-          prompt: |
-            Проанализируй файлы в этом репозитории . Найди критические уязвимости, архитектурные проблемы или места, требующие рефакторинга.
-            Сформулируй ОДНУ самую важную проблему. Ответь строго в формате JSON:
-            {
-              "title": "Заголовок проблемы для Issue",
-              "body": "Подробное описание проблемы, где она находится и как её исправить."
-            }
+        run: |
+          CODE_TEXT=$(cat codebase.txt | jq -aR .)
+          PAYLOAD=$(jq -n \
+            --arg prompt "Проанализируй файлы в этом репозитории. Найди критические уязвимости, архитектурные проблемы или места, требующие рефакторинга. Сформулируй ОДНУ самую важную проблему. Ответь строго в формате JSON без markdown разметки: {\"title\": \"Заголовок проблемы для Issue\", \"body\": \"Подробное описание проблемы, где она находится и как её исправить.\"}" \
+            --arg code "$CODE_TEXT" \
+            '{
+              model: "gpt-4o",
+              response_format: { type: "json_object" },
+              messages: [
+                { role: "system", content: $prompt },
+                { role: "user", content: $code }
+              ]
+            }')
             
+          RESPONSE=$(curl -s https://openai.com \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.CHATGPT_KEY }}" \
+            -d "$PAYLOAD")
+          echo "$RESPONSE" | jq -r '.choices[0].message.content' > gpt-output.json
+
+      # Шаг 3: Читаем сохраненный json и создаем Issue
       - name: Create GitHub Issue
         run: |
           TITLE=$(cat gpt-output.json | jq -r '.title')
           BODY=$(cat gpt-output.json | jq -r '.body')
-          gh issue create --title "$TITLE" --body "$BODY"
+          
+          if [ "$TITLE" != "null" ] && [ -n "$TITLE" ]; then
+            gh issue create --title "$TITLE" --body "$BODY"
+          else
+            echo "Ошибка: ИИ вернул некорректный ответ или API-ключ не подошел."
+            cat gpt-output.json
+            exit 1
+          fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
