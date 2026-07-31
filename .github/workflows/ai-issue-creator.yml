@@ -1,5 +1,4 @@
-name: AI Code Analysis & Issue Creator
-
+name: AI Code Analysis
 on:
   schedule:
     - cron: "0 0 * * 1"
@@ -20,12 +19,10 @@ jobs:
 
       - name: Checkout repository
         uses: actions/checkout@v4
-
-
+        
       - name: Prepare Code Context
         run: |
           echo "=== CODEBASE ANALYSIS ===" > codebase.txt
-
           find . \
             -type f \
             \( \
@@ -47,25 +44,18 @@ jobs:
               echo -e "\n" >> codebase.txt
 
             done
-
-
-
+            
       - name: Run AI Analysis
-
         env:
           OPENAI_API_KEY: ${{ secrets.CHATGPT_KEY }}
 
         run: |
-
           if [ -z "$OPENAI_API_KEY" ]; then
             echo "CHATGPT_KEY отсутствует"
             exit 1
           fi
-
-
+          
           CODE_TEXT=$(jq -Rs . codebase.txt)
-
-
           PAYLOAD=$(jq -n \
             --arg code "$CODE_TEXT" \
             '{
@@ -77,11 +67,10 @@ jobs:
               messages: [
                 {
                   role: "system",
-                  content: "Ты проводишь code review. Найди одну самую критическую проблему в коде. Это может быть уязвимость безопасности, архитектурная проблема, баг или технический долг.
-                  
-                  Ответ строго JSON без markdown:{
+                  content: "Ты проводишь code review. Твоя задача найти все критические проблемы в коде. Это могут быть уязвимости безопасности, архитектурные проблемы, баги или же технический долг.                  
+                  Ответ оформить строго в JSON без markdown'ов и готовых решений :{
                   \"title\": \"Название Issue\",
-                  \"body\": \"Описание проблемы, где находится проблема и как исправить\"
+                  \"body\": \"Описание проблемы, место в коде где находится проблема и рекомендации по её исправлению\"
                 }"
                 },
                 {
@@ -90,84 +79,53 @@ jobs:
                 }
               ]
             }')
-
-
-
+            
           curl -s \
             https://api.openai.com/v1/chat/completions \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer $OPENAI_API_KEY" \
             -d "$PAYLOAD" \
             > openai-response.json
-
-
-
+            
           echo "===== OPENAI RESPONSE ====="
           cat openai-response.json
-
-
-
           ERROR=$(jq -r '.error.message // empty' openai-response.json)
-
           if [ -n "$ERROR" ]; then
             echo "OpenAI API error:"
             echo "$ERROR"
             exit 1
           fi
-
-
-
+          
           CONTENT=$(jq -r '.choices[0].message.content // empty' openai-response.json)
-
-
           if [ -z "$CONTENT" ]; then
             echo "OpenAI не вернул content"
             cat openai-response.json
             exit 1
           fi
-
-
-
+          
           echo "$CONTENT" > gpt-output.json
-
-
-
+          
       - name: Validate AI Response
-
         run: |
-
           echo "===== AI OUTPUT ====="
           cat gpt-output.json
-
-
           if ! jq empty gpt-output.json; then
             echo "AI вернул неправильный JSON"
             exit 1
           fi
-
-
+          
           TITLE=$(jq -r '.title // empty' gpt-output.json)
-
-
           if [ -z "$TITLE" ]; then
             echo "Нет title"
             exit 1
           fi
-
-
-
+          
       - name: Create GitHub Issue
-
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
         run: |
-
           TITLE=$(jq -r '.title' gpt-output.json)
-
           BODY=$(jq -r '.body' gpt-output.json)
-
-
           gh issue create \
             --title "$TITLE" \
             --body "$BODY"
